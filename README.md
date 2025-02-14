@@ -17,3 +17,8 @@
 - `(admin)`: For admins
   - `/manage`: For admins to view new applications and react upon them
   - `/manage/:application_id`: For admins to view and edit a specific application
+
+## Technologies
+- React v18
+- Tailwind v5
+- DaisyUI v5
