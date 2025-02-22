@@ -1,4 +1,25 @@
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.2
+    restart: unless-stopped
+    ports:
+      - '9100:9100'
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+      KC_HTTP_PORT: 9100
+      KC_LOG_CONSOLE_COLOR: 'true'
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        set -ex
+        /opt/keycloak/bin/kc.sh build
+        /opt/keycloak/bin/kc.sh start-dev --import-realm
+
+    volumes:
+      - ./.docker/keycloak-config/:/opt/keycloak/data/import/:ro
+        
   postgres:
     image: postgres
     environment:
@@ -23,8 +44,8 @@ services:
 
   minio:
     image: bitnami/minio:latest
-    volumes:
-      - minio:/bitnami/minio/data
+    #volumes:
+    #  - minio:/bitnami/minio/data
     ports:
       - ${MINIO_PORT:-19000}:9000
       - ${MINIO_PORT_INTERNAL:-9001}:9001
@@ -34,8 +55,16 @@ services:
       MINIO_BROWSER_SESSION_DURATION: ${MINIO_BROWSER_SESSION_DURATION:-7d}
       MINIO_BROWSER_LOGIN_ANIMATION: ${MINIO_BROWSER_LOGIN_ANIMATION:-off}
 
+  tracking:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - '4318:4318' # OpenTelemetry receiver
+      - '14268:14268' # Jaeger receiver
+      - '16686:16686' # Jaeger UI
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+      
         
-volumes:
-  db: { }
-  minio: { }
-  spi-theme: { }
+#volumes:
+  #db: { }
+  #minio: { }

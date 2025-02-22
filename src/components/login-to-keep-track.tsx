@@ -6,11 +6,11 @@ export function LoginToKeepTrack() {
     <form
       action={async () => {
         "use server";
-        await signIn("google");
+        await signIn("keycloak");
       }}
     >
       <button className="btn btn-outline btn-primary" type="submit">
-        <span>Sign in with Google</span>
+        <span>Sign in</span>
         <LogIn />
       </button>
     </form>

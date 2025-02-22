@@ -8,7 +8,7 @@ import { ArrowRight } from "react-feather";
 
 export default async function Home() {
   const session = await auth();
-  let application: (Application & { createdBy: User }) | null = null;
+  let application: (Omit<Application, 'createdById'> & { createdBy: User }) | null = null;
   if (session?.user) {
     application = await api.application.getUserApplication();
   }
@@ -32,7 +32,7 @@ export default async function Home() {
         )}
 
         {!application && (
-          <Link className='btn btn-primary' href="/apply">
+          <Link className='btn btn-soft btn-primary' href="/apply">
             <span>Apply here</span>
             <ArrowRight />
           </Link>

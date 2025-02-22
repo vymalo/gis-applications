@@ -1,4 +1,3 @@
-import "@app/styles/globals.css";
 import { MainLayout } from "@app/components/layouts/main";
 
 export default function RootLayout({

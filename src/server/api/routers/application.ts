@@ -36,7 +36,7 @@ export const applicationRouter = createTRPCRouter({
         ctx.session.user.role === UserRole.ADMIN
           ? undefined
           : ctx.session.user.id;
-      
+
       const application = await ctx.db.application.findUnique({
         where: {
           id: input.id,
@@ -55,13 +55,21 @@ export const applicationRouter = createTRPCRouter({
           InputJsonValueSchema,
         ]),
         userId: z.string().optional(),
+        email: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.application.create({
         data: {
-          createdById: input.userId,
           data: input.data,
+          email: input.email,
+          createdBy: input.userId
+            ? {
+                connect: {
+                  id: input.userId,
+                },
+              }
+            : undefined,
         },
       });
     }),

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowRight } from "react-feather";
 
 interface ToApplicationProps {
-  application: Application & { createdBy: User };
+  application: Omit<Application, 'createdById'> & { createdBy: User };
 }
 
 export function ToApplication({ application }: ToApplicationProps) {

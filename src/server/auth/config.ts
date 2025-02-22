@@ -1,10 +1,10 @@
 import {PrismaAdapter} from "@auth/prisma-adapter";
 import {type DefaultSession, type NextAuthConfig} from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import KeycloakProvider from "next-auth/providers/keycloak";
 
 import {db} from "@app/server/db";
 import {type UserRole} from "@prisma/client";
-import { env } from "@app/env";
+import {env} from "@app/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -33,18 +33,7 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authConfig = {
-  providers: [
-    GoogleProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
-  ],
+  providers: [KeycloakProvider],
   adapter: PrismaAdapter(db),
 
   session: {
@@ -53,7 +42,7 @@ export const authConfig = {
     maxAge: env.AUTH_SESSION_MAX_AGE,
     updateAge: env.AUTH_SESSION_UPDATE_AGE,
   },
-  
+
   callbacks: {
     session: ({ session, user }) => ({
       ...session,

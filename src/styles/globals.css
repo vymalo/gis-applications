@@ -2,7 +2,7 @@
 
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
-    themes: light --default;
+    themes: light --default, dark --prefersdark;
 }
 @plugin "daisyui/theme" {
     name: "light";
@@ -11,7 +11,24 @@
     --color-secondary: #8498F4;
     --color-accent: #8498F4;
     --color-neutral: #101C25;
-    --color-base-100: #F8F9F9;
+    --color-info: #8498F4;
+    --color-success: #90D033;
+    --color-warning: #FFCB1D;
+    --color-error: #E16A6A;
+
+    /* border radius */
+    --radius-selector: 2rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+}
+
+@plugin "daisyui/theme" {
+    name: "dark";
+    default: false;
+    --color-primary: #2F2CF9;
+    --color-secondary: #8498F4;
+    --color-accent: #8498F4;
+    --color-neutral: #28333B; /* Using dark-80 for a rich dark neutral */
     --color-info: #8498F4;
     --color-success: #90D033;
     --color-warning: #FFCB1D;
@@ -19,4 +36,16 @@
     --color-dark-80: #28333B;
     --color-dark-50: #878D92;
     --color-dark-20: #F8F9F9;
+
+
+    /* border radius */
+    --radius-selector: 2rem;
+    --radius-field: 0.5rem;
+    --radius-box: 1rem;
+}
+
+.btn {
+    svg {
+        @apply size-[1.4em];
+    }
 }

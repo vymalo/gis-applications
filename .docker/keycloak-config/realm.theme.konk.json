@@ -1,0 +1,65 @@
+{
+  "id": "konk",
+  "realm": "konk",
+  "displayName": "Konk",
+  "displayNameHtml": "<b>Konk</b> Test",
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": false,
+  "rememberMe": false,
+  "loginWithEmailAllowed": false,
+  "resetPasswordAllowed": false,
+  "enabled": true,
+  "users": [
+    {
+      "email": "test@admin",
+      "username": "test",
+      "firstName": "DevOps",
+      "lastName": "SRE",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "temporary": false,
+          "type": "password",
+          "value": "test"
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "gis-apply",
+      "name": "GIS Apply",
+      "rootUrl": "http://localhost:3000",
+      "adminUrl": "http://localhost:3000",
+      "baseUrl": "/",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "someSecret",
+      "redirectUris": [
+        "/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "notBefore": 0,
+      "standardFlowEnabled": true,
+      "protocol": "openid-connect",
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "organization",
+        "microprofile-jwt"
+      ]
+    }
+  ]
+}
