@@ -1,5 +1,4 @@
 import { auth } from "@app/server/auth";
-import { TRPCReactProvider } from "@app/trpc/react";
 import { redirect } from "next/navigation";
 import { type Metadata } from "next";
 import { UserRole } from "@prisma/client";
@@ -23,11 +22,5 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return (
-    <html lang="en">
-      <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }
