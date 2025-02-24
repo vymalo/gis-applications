@@ -18,8 +18,8 @@ export function ToggleInputComponent({
   const [{ onChange: _, ...field }, { touched, error }, { setValue }] =
     useField(props);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.checked);
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    await setValue(e.target.checked);
   };
 
   return (

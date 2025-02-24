@@ -48,7 +48,7 @@ export default async function ResourcePage({ params }: Props) {
   const content = await loadRes(slug);
   return (
     <main className='prose'>
-      <div dangerouslySetInnerHTML={{ __html: content.contentHtml }} />
+      <div dangerouslySetInnerHTML={{ __html: content.contentHtml! }} />
     </main>
   );
 }

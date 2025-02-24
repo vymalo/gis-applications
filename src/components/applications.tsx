@@ -23,8 +23,8 @@ export function LatestApplication({ status }: LatestApplicationProps) {
 
   return (
     <div className='w-full'>
-      {latestApplication.map(({ createdById, status, data }) => (
-        <>{data['name']}</>
+      {latestApplication.map(({ id, data }) => (
+        <pre key={id}>{JSON.stringify(data, null, 4)}</pre>
       ))}
     </div>
   );

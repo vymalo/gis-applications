@@ -3,7 +3,7 @@ import type { Application, User } from '@prisma/client';
 import { X } from 'react-feather';
 
 export interface FoundPreviousApplicationProps {
-  application: Application & { createdBy: User };
+  application: Application & { createdBy: User | null };
 }
 
 export function FoundPreviousApplication({

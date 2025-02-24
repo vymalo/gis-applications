@@ -4,16 +4,18 @@ import Link from 'next/link';
 import { ArrowRight } from 'react-feather';
 
 interface ToApplicationProps {
-  application: Omit<Application, 'createdById'> & { createdBy: User };
+  application: Omit<Application, 'createdById'> & { createdBy: User | null };
 }
 
 export function ToApplication({ application }: ToApplicationProps) {
   return (
     <Link href={`/apply/${application.id}`}>
-      <Image
-        src={application.createdBy.image}
-        alt={application.createdBy.name}
-      />
+      {application.createdBy?.image && (
+        <Image
+          src={application.createdBy?.image}
+          alt={application.createdBy?.id}
+        />
+      )}
       <span>Edit</span>
       <ArrowRight />
     </Link>

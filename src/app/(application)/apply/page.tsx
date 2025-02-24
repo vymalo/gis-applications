@@ -7,7 +7,7 @@ import type { Application, User } from '@prisma/client';
 
 export default async function ApplyNow() {
   const session = await auth();
-  let application: (Application & { createdBy: User }) | null = null;
+  let application: (Application & { createdBy: User | null }) | null = null;
 
   if (session?.user) {
     application = await api.application.getUserApplication();

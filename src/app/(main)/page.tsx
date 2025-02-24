@@ -9,7 +9,7 @@ import { ArrowRight } from 'react-feather';
 export default async function Home() {
   const session = await auth();
   let application:
-    | (Omit<Application, 'createdById'> & { createdBy: User })
+    | (Omit<Application, 'createdById'> & { createdBy: User | null })
     | null = null;
   if (session?.user) {
     application = await api.application.getUserApplication();

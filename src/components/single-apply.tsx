@@ -77,11 +77,6 @@ export type SingleApplyProps =
       application: Application;
     };
 
-const PhoneNumbersArrayErrors = (errors) =>
-  typeof errors.phoneNumbers === 'string' ? (
-    <div>{errors.phoneNumbers}</div>
-  ) : null;
-
 export function SingleApply({ application = null }: SingleApplyProps) {
   return (
     <Formik<Values>
@@ -100,10 +95,10 @@ export function SingleApply({ application = null }: SingleApplyProps) {
           whereAreYou: '',
         },
       }}
-      onSubmit={async ({ id, ...rest }, { setSubmitting, resetForm }) => {
+      onSubmit={async ({ id: _, ...rest }, {}) => {
         console.log('submitting', rest);
       }}>
-      {({ values, errors, touched }) => (
+      {({ values }) => (
         <Form className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <h1 className='text-3xl font-thin tracking-widest md:col-span-2'>
             Single Apply
@@ -203,14 +198,6 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 </div>
               )}
             />
-
-            {touched['data.phoneNumbers'] && errors['data.phoneNumbers'] && (
-              <div className='label'>
-                <span className='label-text-alt text-error'>
-                  {errors['data.phoneNumbers']}
-                </span>
-              </div>
-            )}
           </div>
 
           <div className='col-span-full grid grid-cols-1 gap-4 md:grid-cols-2'>
