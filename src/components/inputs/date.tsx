@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useField } from "formik";
-import React, { useEffect, useMemo, useRef } from "react";
-import { twMerge } from "tailwind-merge";
-import Pikaday from "pikaday";
-import moment from "moment";
-import { DATE_FORMAT } from "@app/components/inputs/utils";
+import { DATE_FORMAT } from '@app/components/inputs/utils';
+import { useField } from 'formik';
+import moment from 'moment';
+import Pikaday from 'pikaday';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export function DateInputComponent({
   label,
@@ -18,12 +18,12 @@ export function DateInputComponent({
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   >,
-  "defaultChecked" | "defaultValue"
+  'defaultChecked' | 'defaultValue'
 > & {
   label?: string;
   name: string;
 } & Partial<
-    Pick<Pikaday.PikadayOptions, "maxDate" | "minDate" | "defaultDate">
+    Pick<Pikaday.PikadayOptions, 'maxDate' | 'minDate' | 'defaultDate'>
   >) {
   const [{ value: v, ...restField }, { touched, error }, { setValue }] =
     useField(props);
@@ -48,24 +48,24 @@ export function DateInputComponent({
   const value = useMemo(() => moment(v).format(DATE_FORMAT), [v]);
 
   return (
-    <label className="form-control w-full">
-      <div className="label">
-        <span className="label-text">{label ?? restField.name}</span>
+    <label className='form-control w-full'>
+      <div className='label'>
+        <span className='label-text'>{label ?? restField.name}</span>
       </div>
       <input
-        type="text"
+        type='text'
         {...restField}
         {...props}
         value={value}
         className={twMerge(
-          "input pika-single input-bordered w-full",
+          'input pika-single input-bordered w-full',
           props.className,
         )}
         ref={ref}
       />
       {touched && error && (
-        <div className="label">
-          <span className="label-text-alt text-error">{error}</span>
+        <div className='label'>
+          <span className='label-text-alt text-error'>{error}</span>
         </div>
       )}
     </label>

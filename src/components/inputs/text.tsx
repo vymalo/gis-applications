@@ -17,19 +17,19 @@ export function TextInputComponent({
 }) {
   const [field, { touched, error }, {}] = useField(props);
   return (
-    <label className="form-control w-full">
-      <div className="label">
-        <span className="label-text">{label ?? field.name}</span>
+    <label className='form-control w-full'>
+      <div className='label'>
+        <span className='label-text'>{label ?? field.name}</span>
       </div>
       <input
         {...field}
         {...props}
         type={props.type ?? 'text'}
-        className={twMerge("input input-bordered w-full", props.className)}
+        className={twMerge('input input-bordered w-full', props.className)}
       />
       {touched && error && (
-        <div className="label">
-          <span className="label-text-alt text-error">{error}</span>
+        <div className='label'>
+          <span className='label-text-alt text-error'>{error}</span>
         </div>
       )}
     </label>

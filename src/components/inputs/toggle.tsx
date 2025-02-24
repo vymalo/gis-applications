@@ -1,6 +1,6 @@
-import { useField } from "formik";
-import React from "react";
-import { twMerge } from "tailwind-merge";
+import { useField } from 'formik';
+import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export function ToggleInputComponent({
   label,
@@ -10,7 +10,7 @@ export function ToggleInputComponent({
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   >,
-  "defaultChecked" | "defaultValue"
+  'defaultChecked' | 'defaultValue'
 > & {
   label: string;
   name: string;
@@ -23,24 +23,24 @@ export function ToggleInputComponent({
   };
 
   return (
-    <div className="form-control w-full">
-      <label className="label w-full cursor-pointer">
-        <span className="label-text mr-auto text-wrap">
+    <div className='form-control w-full'>
+      <label className='label w-full cursor-pointer'>
+        <span className='label-text mr-auto text-wrap'>
           {label ?? field.name}
         </span>
         <input
           defaultChecked={field.value}
-          type="checkbox"
+          type='checkbox'
           {...field}
           {...props}
           onChange={onChange}
-          className={twMerge("toggle toggle-primary", props.className)}
+          className={twMerge('toggle toggle-primary', props.className)}
         />
       </label>
 
       {touched && error && (
-        <div className="label">
-          <span className="label-text-alt text-error">{error}</span>
+        <div className='label'>
+          <span className='label-text-alt text-error'>{error}</span>
         </div>
       )}
     </div>
