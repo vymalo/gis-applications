@@ -1,15 +1,15 @@
-import { z } from "zod";
+import { z } from 'zod';
 
+import {
+  InputJsonValueSchema,
+  JsonNullValueInputSchema,
+} from '@app/generated/zod';
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "@app/server/api/trpc";
-import {
-  InputJsonValueSchema,
-  JsonNullValueInputSchema,
-} from "@app/generated/zod";
-import { UserRole } from "@prisma/client";
+} from '@app/server/api/trpc';
+import { UserRole } from '@prisma/client';
 
 export const applicationRouter = createTRPCRouter({
   getUserApplication: protectedProcedure.query(async ({ ctx }) => {
@@ -79,7 +79,7 @@ export const applicationRouter = createTRPCRouter({
       z.object({
         page: z.number().int().optional().default(0),
         size: z.number().int().optional().default(10),
-        q: z.string().optional().default(""),
+        q: z.string().optional().default(''),
       }),
     )
     .query(async ({ ctx, input: { q, size, page } }) => {
@@ -87,7 +87,7 @@ export const applicationRouter = createTRPCRouter({
         where: {
           // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
           data: {
-            path: ["name"],
+            path: ['name'],
             string_contains: q,
           },
         },

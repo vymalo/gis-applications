@@ -1,5 +1,5 @@
-import { SingleApply } from "@app/components/single-apply";
-import { api, HydrateClient } from "@app/trpc/server";
+import { SingleApply } from '@app/components/single-apply';
+import { api, HydrateClient } from '@app/trpc/server';
 
 export default async function ApplicationAgain({
   params,

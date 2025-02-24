@@ -1,9 +1,9 @@
-import { auth } from "@app/server/auth";
-import { api, HydrateClient } from "@app/trpc/server";
-import { SingleApply } from "@app/components/single-apply";
-import type { Application, User } from "@prisma/client";
-import { FoundPreviousApplication } from "@app/components/found-previous-application";
-import { LoginToKeepTrack } from "@app/components/login-to-keep-track";
+import { FoundPreviousApplication } from '@app/components/found-previous-application';
+import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
+import { SingleApply } from '@app/components/single-apply';
+import { auth } from '@app/server/auth';
+import { api, HydrateClient } from '@app/trpc/server';
+import type { Application, User } from '@prisma/client';
 
 export default async function ApplyNow() {
   const session = await auth();
@@ -18,7 +18,7 @@ export default async function ApplyNow() {
       <main className='flex flex-col gap-4'>
         {application && <FoundPreviousApplication application={application} />}
         {!session?.user && <LoginToKeepTrack />}
-        <SingleApply application={null} />
+        <SingleApply />
       </main>
     </HydrateClient>
   );

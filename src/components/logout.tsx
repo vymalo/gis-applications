@@ -1,14 +1,13 @@
-import { signOut } from "@app/server/auth";
+import { signOut } from '@app/server/auth';
 
 export function Logout() {
   return (
     <form
       action={async () => {
-        "use server";
+        'use server';
         await signOut();
-      }}
-    >
-      <button type="submit">Sign out</button>
+      }}>
+      <button type='submit'>Sign out</button>
     </form>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Moon, Sun } from 'react-feather';
@@ -26,6 +26,7 @@ export default function ThemeToggle() {
 
   return (
     <button
+      type='button'
       className='btn btn-circle btn-soft btn-primary'
       data-set-theme={nextTheme}
       onClick={onChange}

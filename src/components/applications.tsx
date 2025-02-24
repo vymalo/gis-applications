@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import { api } from "@app/trpc/react";
-import { ApplicationStatus } from "@prisma/client";
+import { api } from '@app/trpc/react';
+import { type ApplicationStatus } from '@prisma/client';
 
 export interface LatestApplicationProps {
   status?: ApplicationStatus;
@@ -22,9 +22,9 @@ export function LatestApplication({ status }: LatestApplicationProps) {
     });
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       {latestApplication.map(({ createdById, status, data }) => (
-        <>{data["name"]}</>
+        <>{data['name']}</>
       ))}
     </div>
   );

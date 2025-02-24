@@ -1,10 +1,10 @@
-import {PrismaAdapter} from "@auth/prisma-adapter";
-import {type DefaultSession, type NextAuthConfig} from "next-auth";
-import KeycloakProvider from "next-auth/providers/keycloak";
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { type DefaultSession, type NextAuthConfig } from 'next-auth';
+import KeycloakProvider from 'next-auth/providers/keycloak';
 
-import {db} from "@app/server/db";
-import {type UserRole} from "@prisma/client";
-import {env} from "@app/env";
+import { env } from '@app/env';
+import { db } from '@app/server/db';
+import { type UserRole } from '@prisma/client';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -12,13 +12,13 @@ import {env} from "@app/env";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;
       // ...other properties
       role: UserRole;
-    } & DefaultSession["user"];
+    } & DefaultSession['user'];
   }
 
   // interface User {
@@ -37,7 +37,7 @@ export const authConfig = {
   adapter: PrismaAdapter(db),
 
   session: {
-    strategy: "database",
+    strategy: 'database',
     // use validation environment variables
     maxAge: env.AUTH_SESSION_MAX_AGE,
     updateAge: env.AUTH_SESSION_UPDATE_AGE,

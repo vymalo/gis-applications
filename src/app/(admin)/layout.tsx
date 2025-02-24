@@ -1,12 +1,12 @@
-import { auth } from "@app/server/auth";
-import { redirect } from "next/navigation";
-import { type Metadata } from "next";
-import { UserRole } from "@prisma/client";
+import { auth } from '@app/server/auth';
+import { UserRole } from '@prisma/client';
+import { type Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: "GIS Application Management",
-  description: "Internal GIS Application Management",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  title: 'GIS Application Management',
+  description: 'Internal GIS Application Management',
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
 export default async function AdminLayout({
@@ -15,11 +15,11 @@ export default async function AdminLayout({
   const session = await auth();
 
   if (session?.user) {
-    redirect("/login");
+    redirect('/login');
   }
 
   if (session?.user.role !== UserRole.ADMIN) {
-    redirect("/");
+    redirect('/');
   }
 
   return <>{children}</>;

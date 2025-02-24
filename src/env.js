@@ -1,5 +1,5 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   /**
@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     AUTH_SECRET:
-      process.env.NODE_ENV === "production"
+      process.env.NODE_ENV === 'production'
         ? z.string()
         : z.string().optional(),
     AUTH_KEYCLOAK_ID: z.string(),
@@ -16,8 +16,8 @@ export const env = createEnv({
     AUTH_KEYCLOAK_ISSUER: z.string(),
     DATABASE_URL: z.string().url(),
     NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+      .enum(['development', 'test', 'production'])
+      .default('development'),
 
     S3_ENDPOINT: z.string(),
     S3_ACCESS_KEY: z.string(),
@@ -26,7 +26,7 @@ export const env = createEnv({
     S3_SCHEME: z.string(),
     S3_BUCKET: z.string(),
     S3_CDN_URL: z.string(),
-    
+
     AUTH_SESSION_MAX_AGE: z.string().transform(Number),
     AUTH_SESSION_UPDATE_AGE: z.string().transform(Number),
   },

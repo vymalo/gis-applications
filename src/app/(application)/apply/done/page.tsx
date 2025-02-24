@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ArrowRight } from "react-feather";
+import Link from 'next/link';
+import { ArrowRight } from 'react-feather';
 
 export default async function ApplicationComplete({
   searchParams,

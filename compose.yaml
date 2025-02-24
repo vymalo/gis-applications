@@ -19,7 +19,7 @@ services:
 
     volumes:
       - ./.docker/keycloak-config/:/opt/keycloak/data/import/:ro
-        
+
   postgres:
     image: postgres
     environment:
@@ -63,8 +63,6 @@ services:
       - '16686:16686' # Jaeger UI
     environment:
       COLLECTOR_OTLP_ENABLED: 'true'
-      
-        
 #volumes:
-  #db: { }
-  #minio: { }
+#db: { }
+#minio: { }
