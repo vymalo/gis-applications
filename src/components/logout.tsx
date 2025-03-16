@@ -1,4 +1,5 @@
 import { signOut } from '@app/server/auth';
+import { LogOut } from 'react-feather';
 
 export function Logout() {
   return (
@@ -7,7 +8,10 @@ export function Logout() {
         'use server';
         await signOut();
       }}>
-      <button type='submit'>Sign out</button>
+      <button className='btn btn-soft btn-error' type='submit'>
+        <span>Sign out</span>
+        <LogOut />
+      </button>
     </form>
   );
 }

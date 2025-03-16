@@ -39,7 +39,7 @@ model Application {
   updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
 
   createdBy   User?   @relation(fields: [createdById], references: [id])
-  createdById String? @unique
+  createdById String?
 
   /// [AppJsonType]
   meta Json?
@@ -87,15 +87,15 @@ enum UserRole {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?      @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
-  role          UserRole     @default(USER)
+  role          UserRole      @default(USER)
   accounts      Account[]
   sessions      Session[]
-  application   Application?
+  application   Application[]
 }
 
 model VerificationToken {

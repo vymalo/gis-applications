@@ -3,11 +3,11 @@ import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
 import { SingleApply } from '@app/components/single-apply';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';
-import type { Application, User } from '@prisma/client';
+import { type ApplicationUser } from '@app/types';
 
 export default async function ApplyNow() {
   const session = await auth();
-  let application: (Application & { createdBy: User | null }) | null = null;
+  let application: ApplicationUser[] = [];
 
   if (session?.user) {
     application = await api.application.getUserApplication();
@@ -16,7 +16,9 @@ export default async function ApplyNow() {
   return (
     <HydrateClient>
       <main className='flex flex-col gap-4'>
-        {application && <FoundPreviousApplication application={application} />}
+        {application.length === 1 && (
+          <FoundPreviousApplication application={application[0]} />
+        )}
         {!session?.user && <LoginToKeepTrack />}
         <SingleApply />
       </main>

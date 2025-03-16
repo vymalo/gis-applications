@@ -47,6 +47,10 @@
 
 .btn {
   svg {
-    @apply size-[1.4em];
+    @apply size-[1.2em];
   }
+}
+
+.app-title {
+  @apply text-3xl font-thin tracking-widest uppercase;
 }

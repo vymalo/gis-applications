@@ -11,12 +11,14 @@ import {
   MAX_CANDIDATE_GCE_DATE,
   MIN_CANDIDATE_BIRTH_DATE,
 } from '@app/components/inputs/utils';
+import { api } from '@app/trpc/react';
 import { type Application } from '@prisma/client';
 import { FieldArray, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { Minus, Plus } from 'react-feather';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
+import {useRouter} from 'next/navigation'
 
 const Schema = z.object({
   email: z.string().email(),
@@ -78,11 +80,13 @@ export type SingleApplyProps =
     };
 
 export function SingleApply({ application = null }: SingleApplyProps) {
+  const { mutateAsync } = api.application.save.useMutation();
+  const router = useRouter();
+
   return (
     <Formik<Values>
       validationSchema={toFormikValidationSchema(Schema)}
       initialValues={{
-        id: application?.id ?? null,
         email: application?.email ?? '',
         data: application?.data ?? {
           firstName: '',
@@ -95,12 +99,16 @@ export function SingleApply({ application = null }: SingleApplyProps) {
           whereAreYou: '',
         },
       }}
-      onSubmit={async ({ id: _, ...rest }, {}) => {
-        console.log('submitting', rest);
+      onSubmit={async ({ id: _, ...rest }, { resetForm, setSubmitting }) => {
+        setSubmitting(true);
+        const { id } = await mutateAsync({ ...rest, id: application?.id });
+        resetForm();
+        router.push(`/apply/success?application_id=${id}`);
+        setSubmitting(false);
       }}>
       {({ values }) => (
         <Form className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-          <h1 className='text-3xl font-thin tracking-widest md:col-span-2'>
+          <h1 className='app-title md:col-span-2'>
             Single Apply
           </h1>
           <p className='md:col-span-2'>

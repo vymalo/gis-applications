@@ -7,7 +7,7 @@ export function MainHeader() {
     <header>
       <div className='container mx-auto my-4 max-w-xl px-4'>
         <div className='flex flex-row items-center justify-between'>
-          <h1 className='text-3xl font-thin tracking-widest uppercase'>
+          <h1 className='app-title'>
             Apply!
           </h1>
 

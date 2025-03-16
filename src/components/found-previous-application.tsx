@@ -1,9 +1,9 @@
 import { ToApplication } from '@app/components/to-application';
-import type { Application, User } from '@prisma/client';
+import { type ApplicationUser } from '@app/types';
 import { X } from 'react-feather';
 
 export interface FoundPreviousApplicationProps {
-  application: Application & { createdBy: User | null };
+  application: ApplicationUser;
 }
 
 export function FoundPreviousApplication({
@@ -12,7 +12,9 @@ export function FoundPreviousApplication({
   return (
     <div>
       <h2>Found Previous Application</h2>
-      <ToApplication application={application} />
+      <div>
+        <ToApplication application={application} />
+      </div>
       <button type='button' className='btn btn-circle'>
         <X />
       </button>

@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { ArrowLeft } from 'react-feather';
 
 export const metadata: Metadata = {
-  title: 'Apply for GIS',
-  description: 'Apply for GIS',
+  title: 'Auth',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default function RootLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
