@@ -22,5 +22,5 @@ export default async function AdminLayout({
     redirect('/');
   }
 
-  return <>{children}</>;
+  return <div className='container mx-auto max-w-7xl p-4'>{children}</div>;
 }

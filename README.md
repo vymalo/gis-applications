@@ -17,8 +17,8 @@
   - `/apply/:application_id`: For editing an application.
 
 - `(admin)`: For admins
-  - `/manage`: For admins to view new applications and react upon them
-  - `/manage/:application_id`: For admins to view and edit a specific application
+  - `/applications`: For admins to view new applications and react upon them
+  - `/applications/:application_id`: For admins to view and edit a specific application
 
 ## Technologies
 

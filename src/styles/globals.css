@@ -45,7 +45,7 @@
   --radius-box: 1rem;
 }
 
-.btn {
+.btn, label {
   svg {
     @apply size-[1.2em];
   }

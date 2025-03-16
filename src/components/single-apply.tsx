@@ -241,7 +241,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
             <FileInputComponent
               label='Your GCE O/L or Probatoire certificate(s)'
               name='data.highSchoolGceOLProbatoireCertificates'
-              accept='image/png,image/jpeg,image/jpg,application/pdf'
+              accept='image/png,image/jpeg,image/jpg '
               max={10}
             />
 
@@ -256,7 +256,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 <FileInputComponent
                   label='Your GCE A/L or BAC certificate(s)'
                   name='data.highSchoolGceALBACCertificates'
-                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  accept='image/png,image/jpeg,image/jpg '
                   max={10}
                 />
               </>
@@ -286,7 +286,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 <FileInputComponent
                   label='Your university certificate(s)'
                   name='data.universityCertificates'
-                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  accept='image/png,image/jpeg,image/jpg '
                   max={10}
                 />
               </>
