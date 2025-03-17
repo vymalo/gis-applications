@@ -7,5 +7,5 @@ export function ApplicationListItem() {
         <div className='skeleton h-2 w-72'></div>
       </div>
     </div>
-  )
+  );
 }

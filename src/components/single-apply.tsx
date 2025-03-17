@@ -15,10 +15,10 @@ import { api } from '@app/trpc/react';
 import { type Application } from '@prisma/client';
 import { FieldArray, Form, Formik } from 'formik';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Minus, Plus } from 'react-feather';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import {useRouter} from 'next/navigation'
 
 const Schema = z.object({
   email: z.string().email(),
@@ -108,9 +108,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
       }}>
       {({ values }) => (
         <Form className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-          <h1 className='app-title md:col-span-2'>
-            Single Apply
-          </h1>
+          <h1 className='app-title md:col-span-2'>Single Apply</h1>
           <p className='md:col-span-2'>
             You shall apply for the GIS Program here. If any question, please
             review the{' '}

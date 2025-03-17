@@ -12,11 +12,11 @@ export function Modal({ children }: PropsWithChildren) {
         <div className='modal-box w-11/12 max-w-2xl'>
           <button
             type='button'
-            className='btn btn-soft btn-circle absolute right-2 top-2'
+            className='btn btn-soft btn-circle absolute right-2 top-2 z-20'
             onClick={() => router.back()}>
             <X />
           </button>
-          
+
           {children}
         </div>
       </div>

@@ -6,10 +6,10 @@ import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
 import { PhoneTelButton } from '@app/components/phone-tel-button';
 import { ToggleJson } from '@app/components/toggle-json';
 import { api } from '@app/trpc/react';
-import { ApplicationStatus } from '@prisma/client';
+import { type ApplicationStatus } from '@prisma/client';
 import moment from 'moment/moment';
 import { Fragment, useCallback } from 'react';
-import { Check, Home, PhoneIncoming, X } from 'react-feather';
+import { Check, Home, PhoneIncoming, RefreshCw, X } from 'react-feather';
 
 interface AdminSingleApplicationProps {
   applicationId: string;
@@ -59,7 +59,7 @@ export function AdminSingleApplication({
     meta.status?.invited ?? {};
 
   return (
-    <ToggleJson doc={application}>
+    <ToggleJson refresh={refetch} doc={application}>
       <h1 className='text-2xl font-bold'>#{application.email}</h1>
       <div className='grid grid-cols-4 gap-2'>
         <p className='opacity-50 col-span-1'>Status</p>
@@ -223,7 +223,7 @@ export function AdminSingleApplication({
             onClick={updateStatus('INIT')}
             className='btn btn-outline btn-secondary col-span-2'>
             <span>Cancel invitation</span>
-            <X />
+            <RefreshCw />
           </button>
 
           <button

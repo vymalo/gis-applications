@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge';
 interface ApplicationStatusProps {
   name: string;
   status: ApplicationStatus;
+  notified?: boolean;
 }
 
 const statusColors: Record<ApplicationStatus, string> = {
@@ -18,6 +19,7 @@ const statusColors: Record<ApplicationStatus, string> = {
 export function ApplicationStatusAvatar({
   name,
   status,
+  notified = false,
 }: ApplicationStatusProps) {
   const initials = useMemo(
     () =>
@@ -28,9 +30,14 @@ export function ApplicationStatusAvatar({
     [name],
   );
   return (
-    <div className='avatar avatar-placeholder'>
-      <div className={twMerge('size-12 rounded-full', statusColors[status])}>
-        <span>{initials}</span>
+    <div>
+      <div
+        className={twMerge('avatar avatar-placeholder', [
+          !notified && 'avatar-online',
+        ])}>
+        <div className={twMerge('size-12 rounded-full', statusColors[status])}>
+          <span>{initials}</span>
+        </div>
       </div>
     </div>
   );

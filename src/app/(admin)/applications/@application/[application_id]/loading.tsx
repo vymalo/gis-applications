@@ -5,5 +5,5 @@ export default function Loading() {
     <Modal>
       <div className='loading loading-lg' />
     </Modal>
-  )
+  );
 }

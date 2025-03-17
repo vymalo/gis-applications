@@ -1,13 +1,13 @@
+import { ApplicationStatusSchema } from '@app/generated/zod';
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from '@app/server/api/trpc';
-import { getDocumentKey } from '@app/utils/constants';
+import { getDocumentKey } from '@app/server/constants';
 import { UserRole } from '@prisma/client';
 import * as _ from 'lodash';
 import { z } from 'zod';
-import { ApplicationStatusSchema } from '@app/generated/zod';
 
 export const applicationRouter = createTRPCRouter({
   getUserApplication: protectedProcedure.query(async ({ ctx }) => {
@@ -328,6 +328,6 @@ export const applicationRouter = createTRPCRouter({
         },
       });
     }),
-  
+
   //invite: protectedProcedure,
 });

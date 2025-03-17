@@ -1,7 +1,8 @@
 import { LatestApplication } from '@app/components/applications';
 import { api, HydrateClient } from '@app/trpc/server';
 
-export default async function Applications() {
+export default async function Applications({ searchParams }) {
+  const { page, size, q, groupBy } = await searchParams;
   void api.application.getSome.prefetch({
     groupBy: 'data.firstName',
   });
@@ -9,7 +10,12 @@ export default async function Applications() {
   return (
     <HydrateClient>
       <main>
-        <LatestApplication />
+        <LatestApplication
+          initialPage={page}
+          initialSize={size}
+          initialQuery={q}
+          initialGroupBy={groupBy}
+        />
       </main>
     </HydrateClient>
   );

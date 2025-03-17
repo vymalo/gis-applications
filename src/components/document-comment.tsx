@@ -72,7 +72,7 @@ export function DocumentComment({
           status: 'pending',
         });
       }
-      
+
       await saveDocumentCheckStatus({
         publicUrl,
         applicationId,
