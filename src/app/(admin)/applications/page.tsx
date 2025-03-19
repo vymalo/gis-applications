@@ -1,7 +1,14 @@
 import { LatestApplication } from '@app/components/applications';
 import { api, HydrateClient } from '@app/trpc/server';
 
-export default async function Applications({ searchParams }) {
+interface SearchParams {
+  page: number;
+  size: number;
+  q: string;
+  groupBy: string;
+}
+
+export default async function Applications({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const { page, size, q, groupBy } = await searchParams;
   void api.application.getSome.prefetch({
     groupBy: 'data.firstName',

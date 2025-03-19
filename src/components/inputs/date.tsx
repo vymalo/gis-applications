@@ -30,6 +30,12 @@ export function DateInputComponent({
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (typeof v === 'string') {
+      setValue(moment(v).toDate());
+    }
+  }, [setValue, v]);
+
+  useEffect(() => {
     const picker = new Pikaday({
       field: ref.current,
       maxDate: maxDate,
@@ -50,7 +56,9 @@ export function DateInputComponent({
   return (
     <label className='form-control w-full'>
       <div className='label'>
-        <span className='label-text'>{label ?? restField.name}</span>
+        <span className='label-text opacity-60 tracking-tight text-base-content'>
+          {label ?? restField.name}
+        </span>
       </div>
       <input
         type='text'

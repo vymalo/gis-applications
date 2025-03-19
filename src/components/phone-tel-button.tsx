@@ -1,40 +1,30 @@
 import parsePhoneNumber from 'libphonenumber-js';
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { PhoneCall } from 'react-feather';
-import { twMerge } from 'tailwind-merge';
 
 interface PhoneTelButtonProps {
   phoneNumber: string;
-  normalCall: boolean;
-  small?: boolean;
 }
 
-export function PhoneTelButton({
-  phoneNumber,
-  normalCall,
-  small = false,
-}: PhoneTelButtonProps) {
-  if (!normalCall) {
-    return phoneNumber;
-  }
+export function PhoneTelButton({ phoneNumber }: PhoneTelButtonProps) {
+  const uri = useMemo(
+    () => parsePhoneNumber(phoneNumber, 'CM')?.getURI(),
+    [phoneNumber],
+  );
 
-  const formatted = parsePhoneNumber(phoneNumber, 'CM');
-
-  if (!formatted) {
+  if (!uri) {
     return null;
   }
 
   return (
     <Link
-      href={formatted.getURI()}
+      href={uri}
       target='_blank'
       rel='noopener noreferrer'
-      className={twMerge('btn btn-soft btn-primary btn-sm', [
-        small && 'btn-circle',
-      ])}
+      className='btn btn-soft btn-primary btn-sm btn-circle'
       title='Call'>
       <PhoneCall />
-      {!small && formatted.formatInternational()}
     </Link>
   );
 }

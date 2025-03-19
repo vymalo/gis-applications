@@ -154,7 +154,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
 
           <div className='col-span-full'>
             <div className='label'>
-              <span className='label-text'>Phone numbers</span>
+              <span className='label-text text-base-content'>Phone numbers</span>
             </div>
 
             <FieldArray
@@ -166,7 +166,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                       key={index}
                       className='flex w-full flex-col items-end gap-4'>
                       <TextInputComponent
-                        label='Number'
+                        label='Number (without +237)'
                         name={`data.phoneNumbers.${index}.phoneNumber`}
                       />
                       <ToggleInputComponent
@@ -190,7 +190,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                   <div className='md:col-span-2'>
                     <button
                       type='button'
-                      className='btn btn-soft btn-primary btn-circle'
+                      className='btn btn-soft btn-primary'
                       onClick={() =>
                         arrayHelpers.push({
                           phoneNumber: '',
@@ -198,6 +198,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                           normalCall: false,
                         })
                       }>
+                      <span>Add a phone number</span>
                       <Plus />
                     </button>
                   </div>

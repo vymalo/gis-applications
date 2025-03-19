@@ -111,6 +111,7 @@ export const applicationRouter = createTRPCRouter({
                   data: {
                     path: ['lastName'],
                     string_contains: q,
+                    mode: 'insensitive',
                   },
                 },
                 {
@@ -118,6 +119,7 @@ export const applicationRouter = createTRPCRouter({
                   data: {
                     path: ['firstName'],
                     string_contains: q,
+                    mode: 'insensitive',
                   },
                 },
                 {
@@ -125,6 +127,7 @@ export const applicationRouter = createTRPCRouter({
                   data: {
                     path: ['whoAreYou'],
                     string_contains: q,
+                    mode: 'insensitive',
                   },
                 },
                 {
@@ -132,64 +135,7 @@ export const applicationRouter = createTRPCRouter({
                   data: {
                     path: ['whereAreYou'],
                     string_contains: q,
-                  },
-                },
-
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['lastName'],
-                    string_contains: q.toUpperCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['firstName'],
-                    string_contains: q.toUpperCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whoAreYou'],
-                    string_contains: q.toUpperCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whereAreYou'],
-                    string_contains: q.toUpperCase(),
-                  },
-                },
-
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['lastName'],
-                    string_contains: q.toLowerCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['firstName'],
-                    string_contains: q.toLowerCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whoAreYou'],
-                    string_contains: q.toLowerCase(),
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whereAreYou'],
-                    string_contains: q.toLowerCase(),
+                    mode: 'insensitive',
                   },
                 },
               ],

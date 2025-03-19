@@ -27,6 +27,12 @@ export const env = createEnv({
     S3_BUCKET: z.string(),
     S3_CDN_URL: z.string(),
 
+    APP_URL: z.string().url(),
+    
+    SMTP_URL: z.string().url(),
+    SMTP_FROM: z.string(),
+    SMTP_REPLY_TO: z.string(),
+
     AUTH_SESSION_MAX_AGE: z.string().transform(Number),
     AUTH_SESSION_UPDATE_AGE: z.string().transform(Number),
   },
@@ -59,6 +65,12 @@ export const env = createEnv({
     S3_SCHEME: process.env.S3_SCHEME,
     S3_BUCKET: process.env.S3_BUCKET,
     S3_CDN_URL: process.env.S3_CDN_URL,
+
+    APP_URL: process.env.APP_URL,
+    
+    SMTP_URL: process.env.SMTP_URL,
+    SMTP_FROM: process.env.SMTP_FROM,
+    SMTP_REPLY_TO: process.env.SMTP_REPLY_TO,
 
     AUTH_SESSION_MAX_AGE: process.env.AUTH_SESSION_MAX_AGE,
     AUTH_SESSION_UPDATE_AGE: process.env.AUTH_SESSION_UPDATE_AGE,

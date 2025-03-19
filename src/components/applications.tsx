@@ -14,6 +14,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Eye, Send, Sliders } from 'react-feather';
 import { twMerge } from 'tailwind-merge';
+import { BatchActions } from '@app/components/batch-actions';
 
 export interface LatestApplicationProps {
   initialPage?: number;
@@ -88,20 +89,7 @@ export function LatestApplication(props: LatestApplicationProps) {
                 Batch actions <Send className='size-[1rem]' />
               </a>
               <ul>
-                <li>
-                  <button>
-                    <span>Send phone Interview</span>
-                  </button>
-                  <button>
-                    <span>Send onsite Interview</span>
-                  </button>
-                  <button>
-                    <span>Send acceptance confirmation</span>
-                  </button>
-                  <button>
-                    <span>Send rejection confirmation</span>
-                  </button>
-                </li>
+                <BatchActions />
               </ul>
             </li>
           </ul>
@@ -125,7 +113,7 @@ export function LatestApplication(props: LatestApplicationProps) {
                       name={`${data.firstName} ${data.lastName}`}
                       status={status}
                       notified={
-                        meta.status?.invited?.[status] ?? status === 'INIT'
+                        meta?.status?.invited?.[status] ?? status === 'INIT'
                       }
                     />
 
@@ -140,20 +128,17 @@ export function LatestApplication(props: LatestApplicationProps) {
                         {moment(createdAt).format(DATE_FORMAT)}
                       </div>
                     </div>
-                    <div className='flex flex-row gap-2'>
+                    <div className='flex flex-row gap-2 items-center'>
                       {data.phoneNumbers.map(
                         ({ phoneNumber, whatsappCall, normalCall }) => (
                           <Fragment key={phoneNumber}>
-                            <PhoneTelButton
-                              small
-                              phoneNumber={phoneNumber}
-                              normalCall={normalCall}
-                            />
+                            {normalCall && (
+                              <PhoneTelButton phoneNumber={phoneNumber} />
+                            )}
 
-                            <OpenWhatsappButton
-                              whatsappCall={whatsappCall}
-                              phoneNumber={phoneNumber}
-                            />
+                            {whatsappCall && (
+                              <OpenWhatsappButton phoneNumber={phoneNumber} />
+                            )}
                           </Fragment>
                         ),
                       )}

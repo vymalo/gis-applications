@@ -1,6 +1,7 @@
 'use client';
 
 import { DocumentComment } from '@app/components/document-comment';
+import { FormattedPhoneNumber } from '@app/components/formatted-phone-number';
 import { DATE_FORMAT } from '@app/components/inputs/utils';
 import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
 import { PhoneTelButton } from '@app/components/phone-tel-button';
@@ -56,7 +57,7 @@ export function AdminSingleApplication({
   const status = application.status;
   const meta = application.meta ?? {};
   const metaStatusInvited: Record<ApplicationStatus, boolean> =
-    meta.status?.invited ?? {};
+    meta?.status?.invited ?? {};
 
   return (
     <ToggleJson refresh={refetch} doc={application}>
@@ -90,14 +91,11 @@ export function AdminSingleApplication({
         {data.phoneNumbers.map(({ phoneNumber, whatsappCall, normalCall }) => (
           <Fragment key={phoneNumber}>
             <div className='col-span-2 flex flex-row items-center gap-2'>
-              <PhoneTelButton
-                phoneNumber={phoneNumber}
-                normalCall={normalCall}
-              />
-              <OpenWhatsappButton
-                whatsappCall={whatsappCall}
-                phoneNumber={phoneNumber}
-              />
+              <FormattedPhoneNumber phoneNumber={phoneNumber} />
+
+              {normalCall && <PhoneTelButton phoneNumber={phoneNumber} />}
+
+              {whatsappCall && <OpenWhatsappButton phoneNumber={phoneNumber} />}
             </div>
             <div className='col-span-1'>
               {whatsappCall ? (

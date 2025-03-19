@@ -25,7 +25,7 @@ export function ToggleInputComponent({
   return (
     <div className='form-control w-full'>
       <label className='label w-full cursor-pointer'>
-        <span className='label-text mr-auto text-wrap'>
+        <span className='label-text opacity-60 tracking-tight text-base-content mr-auto text-wrap'>
           {label ?? field.name}
         </span>
         <input

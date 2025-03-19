@@ -2,7 +2,8 @@ import { useUploadFile } from '@app/hooks/upload-file';
 import { useField } from 'formik';
 import React, { useCallback, useId } from 'react';
 
-import { UploadCloud, X } from 'react-feather';
+import Image from 'next/image';
+import { X } from 'react-feather';
 import { useImperativeFilePicker } from 'use-file-picker';
 import {
   FileAmountLimitValidator,
@@ -65,7 +66,9 @@ export function FileInputComponent({
   return (
     <label className='form-control w-full'>
       <label htmlFor={id} className='label'>
-        <span className='label-text'>{label ?? field.name}</span>
+        <span className='label-text opacity-60 tracking-tight text-base-content'>
+          {label ?? field.name}
+        </span>
       </label>
 
       <div className='pt-2'>
@@ -83,7 +86,16 @@ export function FileInputComponent({
               className='list-row flex flex-row items-center gap-4'
               key={index}>
               <div className='text-primary'>
-                <UploadCloud />
+                <div className='avatar'>
+                  <div className='w-12 rounded-full relative'>
+                    <Image
+                      fill
+                      className='object-contain'
+                      src={file.publicUrl}
+                      alt={file.name}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>

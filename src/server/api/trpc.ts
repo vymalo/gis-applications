@@ -13,6 +13,7 @@ import { ZodError } from 'zod';
 
 import { auth } from '@app/server/auth';
 import { db } from '@app/server/db';
+import { transporter } from '@app/server/nodemailer';
 
 /**
  * 1. CONTEXT
@@ -31,6 +32,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   return {
     db,
+    transporter,
     session,
     ...opts,
   };

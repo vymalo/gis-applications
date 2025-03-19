@@ -22,7 +22,7 @@ export function SelectComponent({
   return (
     <label className='form-control w-full'>
       <div className='label'>
-        <span className='label-text'>{label ?? field.name}</span>
+        <span className='label-text opacity-60 tracking-tight text-base-content'>{label ?? field.name}</span>
       </div>
 
       <select
