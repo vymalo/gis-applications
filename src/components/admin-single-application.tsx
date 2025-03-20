@@ -82,6 +82,27 @@ export function AdminSingleApplication({
         <div className='opacity-50 col-span-1'>Who are you?</div>
         <div className='col-span-3'>{data.whoAreYou}</div>
 
+        <div className='divider col-span-full'>Identity</div>
+
+        <div className='opacity-50 col-span-1'>Have a national ID card or passport?</div>
+        <div className='col-span-3'>{data.hasIDCartOrPassport ? 'Yes' : 'No'}</div>
+
+        <div className='col-span-full opacity-50'>
+          ID card or passport or receipt
+        </div>
+        <div className='col-span-full grid grid-cols-2 gap-4'>
+          {data.iDCartOrPassportOrReceipt?.map(
+            ({ name, publicUrl }) => (
+              <DocumentComment
+                applicationId={applicationId}
+                publicUrl={publicUrl}
+                name={name}
+                key={publicUrl}
+              />
+            ),
+          )}
+        </div>
+
         <div className='divider col-span-full'>Phone numbers</div>
 
         <div className='col-span-2 opacity-50'>Phone number</div>
@@ -141,7 +162,7 @@ export function AdminSingleApplication({
           Your GCE O/L or Probatoire certificate(s)
         </div>
         <div className='col-span-full grid grid-cols-2 gap-4'>
-          {data.highSchoolGceOLProbatoireCertificates.map(
+          {data.highSchoolGceOLProbatoireCertificates?.map(
             ({ name, publicUrl }) => (
               <DocumentComment
                 applicationId={applicationId}
@@ -160,7 +181,7 @@ export function AdminSingleApplication({
               Your GCE A/L or BAC certificate(s)
             </div>
             <div className='col-span-full grid grid-cols-2 gap-4'>
-              {data.highSchoolGceALBACCertificates.map(
+              {data.highSchoolGceALBACCertificates?.map(
                 ({ name, publicUrl }) => (
                   <DocumentComment
                     applicationId={applicationId}
@@ -199,7 +220,7 @@ export function AdminSingleApplication({
               Your university certificate(s)
             </div>
             <div className='col-span-full grid grid-cols-2 gap-4'>
-              {data.universityCertificates.map(({ name, publicUrl }) => (
+              {data.universityCertificates?.map(({ name, publicUrl }) => (
                 <DocumentComment
                   applicationId={applicationId}
                   publicUrl={publicUrl}
@@ -213,49 +234,50 @@ export function AdminSingleApplication({
           </>
         )}
 
-        <div className='divider col-span-full'>Action</div>
+        {!(metaStatusInvited.REJECTED || metaStatusInvited.ACCEPTED) && (
+          <>
+            <div className='divider col-span-full'>Action</div>
+            <div className='col-span-full grid grid-cols-4 gap-2'>
+              <button
+                disabled={status === 'INIT' || (Object.keys(metaStatusInvited).length !== 0)}
+                onClick={updateStatus('INIT')}
+                className='btn btn-outline btn-secondary col-span-2'>
+                <span>Cancel invitation</span>
+                <RefreshCw />
+              </button>
 
-        <div className='col-span-full flex flex-row flex-wrap gap-2'>
-          <button
-            disabled={status === 'INIT'}
-            onClick={updateStatus('INIT')}
-            className='btn btn-outline btn-secondary col-span-2'>
-            <span>Cancel invitation</span>
-            <RefreshCw />
-          </button>
+              <button
+                disabled={metaStatusInvited.PHONE_INTERVIEW_PHASE || metaStatusInvited.ONSITE_INTERVIEW_PHASE}
+                onClick={updateStatus('PHONE_INTERVIEW_PHASE')}
+                className='btn btn-outline btn-primary col-span-2'>
+                <span>Should invite to phone interview</span>
+                <PhoneIncoming />
+              </button>
 
-          <button
-            disabled={metaStatusInvited.PHONE_INTERVIEW_PHASE}
-            onClick={updateStatus('PHONE_INTERVIEW_PHASE')}
-            className='btn btn-outline btn-primary col-span-2'>
-            <span>Should invite to phone interview</span>
-            <PhoneIncoming />
-          </button>
+              <button
+                disabled={metaStatusInvited.ONSITE_INTERVIEW_PHASE}
+                onClick={updateStatus('ONSITE_INTERVIEW_PHASE')}
+                className='btn btn-outline btn-primary col-span-2'>
+                <span>Should invite to onsite interview</span>
+                <Home />
+              </button>
 
-          <button
-            disabled={metaStatusInvited.ONSITE_INTERVIEW_PHASE}
-            onClick={updateStatus('ONSITE_INTERVIEW_PHASE')}
-            className='btn btn-outline btn-primary col-span-2'>
-            <span>Should invite to onsite interview</span>
-            <Home />
-          </button>
+              <button
+                onClick={updateStatus('ACCEPTED')}
+                className='btn btn-outline btn-success col-span-2'>
+                <span>Should accept application</span>
+                <Check />
+              </button>
 
-          <button
-            disabled={metaStatusInvited.ACCEPTED}
-            onClick={updateStatus('ACCEPTED')}
-            className='btn btn-outline btn-success col-span-2'>
-            <span>Should accept application</span>
-            <Check />
-          </button>
-
-          <button
-            disabled={metaStatusInvited.ACCEPTED}
-            onClick={updateStatus('REJECTED')}
-            className='btn btn-outline btn-error col-span-2'>
-            <span>Should reject application</span>
-            <X />
-          </button>
-        </div>
+              <button
+                onClick={updateStatus('REJECTED')}
+                className='btn btn-outline btn-error col-span-2'>
+                <span>Should reject application</span>
+                <X />
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </ToggleJson>
   );

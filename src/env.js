@@ -1,5 +1,6 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
+import moment from 'moment';
 
 export const env = createEnv({
   /**
@@ -28,13 +29,15 @@ export const env = createEnv({
     S3_CDN_URL: z.string(),
 
     APP_URL: z.string().url(),
-    
+
     SMTP_URL: z.string().url(),
     SMTP_FROM: z.string(),
     SMTP_REPLY_TO: z.string(),
 
     AUTH_SESSION_MAX_AGE: z.string().transform(Number),
     AUTH_SESSION_UPDATE_AGE: z.string().transform(Number),
+
+    APP_LAST_APPLICATION_DATE: z.string().transform((r) => moment(r)),
   },
 
   /**
@@ -67,13 +70,15 @@ export const env = createEnv({
     S3_CDN_URL: process.env.S3_CDN_URL,
 
     APP_URL: process.env.APP_URL,
-    
+
     SMTP_URL: process.env.SMTP_URL,
     SMTP_FROM: process.env.SMTP_FROM,
     SMTP_REPLY_TO: process.env.SMTP_REPLY_TO,
 
     AUTH_SESSION_MAX_AGE: process.env.AUTH_SESSION_MAX_AGE,
     AUTH_SESSION_UPDATE_AGE: process.env.AUTH_SESSION_UPDATE_AGE,
+
+    APP_LAST_APPLICATION_DATE: process.env.APP_LAST_APPLICATION_DATE,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import React, { useCallback, useId } from 'react';
 
 import Image from 'next/image';
-import { X } from 'react-feather';
+import { Upload, X } from 'react-feather';
 import { useImperativeFilePicker } from 'use-file-picker';
 import {
   FileAmountLimitValidator,
@@ -74,10 +74,11 @@ export function FileInputComponent({
       <div className='pt-2'>
         <button
           type='button'
-          className='btn btn-primary btn-outline'
+          className='btn btn-primary btn-soft'
           id={id}
           onClick={() => openFilePicker()}>
-          Select files
+          <span>Select files</span>
+          <Upload />
         </button>
 
         <div className='list'>

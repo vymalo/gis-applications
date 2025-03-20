@@ -11,7 +11,7 @@
   "enabled": true,
   "users": [
     {
-      "email": "test@admin",
+      "email": "test@admin.com",
       "username": "test",
       "firstName": "DevOps",
       "lastName": "SRE",

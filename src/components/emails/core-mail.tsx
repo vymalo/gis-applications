@@ -1,4 +1,4 @@
-import { Application } from '@prisma/client';
+import { type Application } from '@prisma/client';
 import {
   Body,
   Container,
@@ -59,7 +59,7 @@ export function CoreMail({
 
             <CustomHr />
 
-            <TextParagraph>Bangangté, Cameroon</TextParagraph>
+            <Text style={footer}>Bangangté, Cameroon</Text>
           </Section>
         </Container>
       </Body>

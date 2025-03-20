@@ -48,7 +48,9 @@ export function DateInputComponent({
         setValue(moment(value).toDate());
       },
     });
-    return () => picker.destroy();
+    return () => {
+      picker?.destroy?.();
+    };
   }, [defaultDate, maxDate, minDate, setValue]);
 
   const value = useMemo(() => moment(v).format(DATE_FORMAT), [v]);

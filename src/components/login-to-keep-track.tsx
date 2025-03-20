@@ -8,7 +8,7 @@ export function LoginToKeepTrack() {
         'use server';
         await signIn('keycloak');
       }}>
-      <button className='btn btn-outline btn-primary' type='submit'>
+      <button className='btn btn-soft btn-primary' type='submit'>
         <span>Sign in</span>
         <LogIn />
       </button>

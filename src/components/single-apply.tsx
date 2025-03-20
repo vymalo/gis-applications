@@ -14,6 +14,7 @@ import {
 import { api } from '@app/trpc/react';
 import { type Application } from '@prisma/client';
 import { FieldArray, Form, Formik } from 'formik';
+import type { User } from 'next-auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Minus, Plus } from 'react-feather';
@@ -44,11 +45,11 @@ const Schema = z.object({
       city: z.string(),
       whereAreYou: z.string().optional(),
     })
+    .passthrough()
     .required(),
 });
 
 interface Values {
-  id: string | null;
   email: string;
   data: {
     firstName: string;
@@ -68,6 +69,8 @@ interface Values {
     universityStartDate: Date;
     universityEndDate: Date;
     universityCertificates: Date;
+    hasIDCartOrPassport: boolean;
+    iDCartOrPassportOrReceipt: any[];
   };
 }
 
@@ -79,7 +82,10 @@ export type SingleApplyProps =
       application: Application;
     };
 
-export function SingleApply({ application = null }: SingleApplyProps) {
+export function SingleApply({
+  application = null,
+  user = undefined,
+}: SingleApplyProps & { user?: User }) {
   const { mutateAsync } = api.application.save.useMutation();
   const router = useRouter();
 
@@ -87,7 +93,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
     <Formik<Values>
       validationSchema={toFormikValidationSchema(Schema)}
       initialValues={{
-        email: application?.email ?? '',
+        email: application?.email ?? user?.email ?? '',
         data: application?.data ?? {
           firstName: '',
           lastName: '',
@@ -97,11 +103,14 @@ export function SingleApply({ application = null }: SingleApplyProps) {
           country: 'cameroon',
           city: '',
           whereAreYou: '',
+          hasIDCartOrPassport: '',
+          iDCartOrPassportOrReceipt: [],
+          highSchoolOver: '',
         },
       }}
-      onSubmit={async ({ id: _, ...rest }, { resetForm, setSubmitting }) => {
+      onSubmit={async (values, { resetForm, setSubmitting }) => {
         setSubmitting(true);
-        const { id } = await mutateAsync({ ...rest, id: application?.id });
+        const { id } = await mutateAsync({ ...values, id: application?.id });
         resetForm();
         router.push(`/apply/success?application_id=${id}`);
         setSubmitting(false);
@@ -116,7 +125,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
               target='_blank'
               rel='canonical'
               href='/res/faq'
-              className='link'>
+              className='link link-primary'>
               FAQ
             </Link>{' '}
             page.
@@ -132,7 +141,12 @@ export function SingleApply({ application = null }: SingleApplyProps) {
             name='data.lastName'
             autoComplete='family-name'
           />
-          <TextInputComponent label='Email' name='email' type='email' />
+          <TextInputComponent
+            label='Email'
+            name='email'
+            type='email'
+            disabled={!!user}
+          />
           <DateInputComponent
             label='Birth date'
             name='data.birthDate'
@@ -154,7 +168,9 @@ export function SingleApply({ application = null }: SingleApplyProps) {
 
           <div className='col-span-full'>
             <div className='label'>
-              <span className='label-text text-base-content'>Phone numbers</span>
+              <span className='label-text text-base-content'>
+                Phone numbers
+              </span>
             </div>
 
             <FieldArray
@@ -221,6 +237,23 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 rows={4}
               />
             </div>
+          </div>
+
+          <div className='divider col-span-full'>Identity</div>
+
+          <div className='col-span-full'>
+            <ToggleInputComponent
+              label='Have a national ID card or passport?'
+              name='data.hasIDCartOrPassport'
+            />
+          </div>
+          <div className='col-span-full'>
+            <FileInputComponent
+              label='ID card or passport or receipt'
+              name='data.iDCartOrPassportOrReceipt'
+              accept='image/png,image/jpeg,image/jpg '
+              max={5}
+            />
           </div>
 
           <div className='divider col-span-full'>Education</div>
