@@ -20,12 +20,12 @@ spec:
     - Ingress
   ingress:
     - from:
-      - podSelector:
-          matchLabels:
-            app: gis-lms-backend
+        - podSelector:
+            matchLabels:
+              app: gis-lms-backend
       ports:
-      - port: 3000
-        protocol: TCP
+        - port: 3000
+          protocol: TCP
 ---
 # Source: gis-lms-backend/charts/app/templates/common.yaml
 apiVersion: v1
@@ -108,15 +108,15 @@ metadata:
   annotations:
     description: Common configuration for the GIS Application app.
 data:
-  APP_LAST_APPLICATION_DATE: "2026-01-31"
+  APP_LAST_APPLICATION_DATE: '2026-01-31'
   APP_URL: https://apply.example.com
   AUTH_KEYCLOAK_ISSUER: https://kec.example.com/realms/main
-  AUTH_SESSION_MAX_AGE: "2592000"
-  AUTH_SESSION_UPDATE_AGE: "2592000"
+  AUTH_SESSION_MAX_AGE: '2592000'
+  AUTH_SESSION_UPDATE_AGE: '2592000'
   S3_BUCKET: gis-applications
   S3_CDN_URL: https://s3.example.com
   S3_ENDPOINT: s3.example.com
-  S3_PORT: "443"
+  S3_PORT: '443'
   S3_SCHEME: https
   SMTP_CC: GIS Group <cc@server.com>
   SMTP_FROM: Sender Name <sender@server.com>
@@ -171,36 +171,36 @@ spec:
       app.kubernetes.io/instance: monitoring
   template:
     metadata:
-      annotations: 
+      annotations:
         checksum/configMaps: b936a82b659db844d1b80d8847fbb4fbc6a7d6865d8d992a1329324c6f3de328
         checksum/secrets: 331dfb145f059284a59c70e8911cf5728f12bd0c2c712b8b4c1f2ae7c458c796
-      labels: 
+      labels:
         app.kubernetes.io/component: main
         app.kubernetes.io/instance: monitoring
         app.kubernetes.io/name: monitoring
-    spec: 
+    spec:
       enableServiceLinks: false
       serviceAccountName: default
       automountServiceAccountToken: true
-      securityContext: 
+      securityContext:
         runAsGroup: 1000
         runAsUser: 1000
       hostIPC: false
       hostNetwork: false
       hostPID: false
       dnsPolicy: ClusterFirst
-      containers: 
+      containers:
         - envFrom:
-          - configMapRef:
-              name: monitoring-config
-          - secretRef:
-              name: monitoring-s3
-          - secretRef:
-              name: monitoring-smtp
-          - secretRef:
-              name: monitoring-auth
-          - secretRef:
-              name: monitoring-db
+            - configMapRef:
+                name: monitoring-config
+            - secretRef:
+                name: monitoring-s3
+            - secretRef:
+                name: monitoring-smtp
+            - secretRef:
+                name: monitoring-auth
+            - secretRef:
+                name: monitoring-db
           image: ghcr.io/adorsys-gis/gis-applications:2025.03.20
           imagePullPolicy: IfNotPresent
           name: app
@@ -220,13 +220,13 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - "apply.example.com"
-      secretName: "apply-example-com-secret"
+        - 'apply.example.com'
+      secretName: 'apply-example-com-secret'
   rules:
-    - host: "apply.example.com"
+    - host: 'apply.example.com'
       http:
         paths:
-          - path: "/"
+          - path: '/'
             pathType: Prefix
             backend:
               service:

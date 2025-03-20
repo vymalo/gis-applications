@@ -4,8 +4,7 @@ import type { Application } from '@prisma/client';
 export const OnsiteInterview = (props: Application) => (
   <CoreMail {...props} preview='Invitation go Onsite Interview!'>
     <TextParagraph>
-      We&#39;re excited to invite you to an
-      onsite interview.
+      We&#39;re excited to invite you to an onsite interview.
     </TextParagraph>
 
     <TextParagraph>

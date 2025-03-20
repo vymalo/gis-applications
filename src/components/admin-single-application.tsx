@@ -84,23 +84,25 @@ export function AdminSingleApplication({
 
         <div className='divider col-span-full'>Identity</div>
 
-        <div className='opacity-50 col-span-1'>Have a national ID card or passport?</div>
-        <div className='col-span-3'>{data.hasIDCartOrPassport ? 'Yes' : 'No'}</div>
+        <div className='opacity-50 col-span-1'>
+          Have a national ID card or passport?
+        </div>
+        <div className='col-span-3'>
+          {data.hasIDCartOrPassport ? 'Yes' : 'No'}
+        </div>
 
         <div className='col-span-full opacity-50'>
           ID card or passport or receipt
         </div>
         <div className='col-span-full grid grid-cols-2 gap-4'>
-          {data.iDCartOrPassportOrReceipt?.map(
-            ({ name, publicUrl }) => (
-              <DocumentComment
-                applicationId={applicationId}
-                publicUrl={publicUrl}
-                name={name}
-                key={publicUrl}
-              />
-            ),
-          )}
+          {data?.iDCartOrPassportOrReceipt?.map(({ name, publicUrl }) => (
+            <DocumentComment
+              applicationId={applicationId}
+              publicUrl={publicUrl}
+              name={name}
+              key={publicUrl}
+            />
+          ))}
         </div>
 
         <div className='divider col-span-full'>Phone numbers</div>
@@ -239,7 +241,10 @@ export function AdminSingleApplication({
             <div className='divider col-span-full'>Action</div>
             <div className='col-span-full grid grid-cols-4 gap-2'>
               <button
-                disabled={status === 'INIT' || (Object.keys(metaStatusInvited).length !== 0)}
+                disabled={
+                  status === 'INIT' ||
+                  Object.keys(metaStatusInvited).length !== 0
+                }
                 onClick={updateStatus('INIT')}
                 className='btn btn-outline btn-secondary col-span-2'>
                 <span>Cancel invitation</span>
@@ -247,7 +252,10 @@ export function AdminSingleApplication({
               </button>
 
               <button
-                disabled={metaStatusInvited.PHONE_INTERVIEW_PHASE || metaStatusInvited.ONSITE_INTERVIEW_PHASE}
+                disabled={
+                  metaStatusInvited.PHONE_INTERVIEW_PHASE ||
+                  metaStatusInvited.ONSITE_INTERVIEW_PHASE
+                }
                 onClick={updateStatus('PHONE_INTERVIEW_PHASE')}
                 className='btn btn-outline btn-primary col-span-2'>
                 <span>Should invite to phone interview</span>

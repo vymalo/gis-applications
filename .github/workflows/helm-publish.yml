@@ -3,7 +3,7 @@ name: Helm Publish
 on:
   push:
     branches:
-      - '*'  # Matches all branches
+      - '*' # Matches all branches
     tags:
       - 'v*'
     paths:
@@ -11,7 +11,6 @@ on:
       - '.github/workflows/helm-publish.yml'
 
 jobs:
-
   helm-publish:
     runs-on: ubuntu-latest
     name: Publish Helm Chart ${{ matrix.chart }}

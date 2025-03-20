@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 
 import { ApplicationStatusAvatar } from '@app/components/application-status-avatar';
+import { BatchActions } from '@app/components/batch-actions';
 import { DATE_FORMAT } from '@app/components/inputs/utils';
 import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
 import { PhoneTelButton } from '@app/components/phone-tel-button';
@@ -14,7 +15,6 @@ import moment from 'moment';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Eye, Send, Sliders } from 'react-feather';
 import { twMerge } from 'tailwind-merge';
-import { BatchActions } from '@app/components/batch-actions';
 
 export interface LatestApplicationProps {
   initialPage?: number;
@@ -129,7 +129,7 @@ export function LatestApplication(props: LatestApplicationProps) {
                       </div>
                     </div>
                     <div className='flex flex-row gap-2 items-center'>
-                      {data.phoneNumbers.map(
+                      {data?.phoneNumbers?.map(
                         ({ phoneNumber, whatsappCall, normalCall }) => (
                           <Fragment key={phoneNumber}>
                             {normalCall && (

@@ -8,7 +8,11 @@ export default async function ClosedPage() {
 
       <p className='md:col-span-2'>
         If any question, please review the{' '}
-        <Link target='_blank' rel='canonical' href='/res/faq' className='link link-primary'>
+        <Link
+          target='_blank'
+          rel='canonical'
+          href='/res/faq'
+          className='link link-primary'>
           FAQ
         </Link>{' '}
         page.

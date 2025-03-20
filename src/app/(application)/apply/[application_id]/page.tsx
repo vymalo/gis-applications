@@ -32,15 +32,13 @@ export default async function ApplicationAgain({
   if (application.status !== 'INIT') {
     return (
       <main className='flex flex-col gap-4'>
-        <h1 className='app-title md:col-span-2'>
-          Submitted already!
-        </h1>
-        <p>
-          This application was already submitted!
-        </p>
+        <h1 className='app-title md:col-span-2'>Submitted already!</h1>
+        <p>This application was already submitted!</p>
         <p>
           When an application is submitted, it cannot be changed. Please consult
-          your mailbox (for <span className='underline italic'>{application.email}</span>) for more updates.
+          your mailbox (for{' '}
+          <span className='underline italic'>{application.email}</span>) for
+          more updates.
         </p>
       </main>
     );

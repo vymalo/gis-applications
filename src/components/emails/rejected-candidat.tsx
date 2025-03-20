@@ -13,9 +13,7 @@ export const RejectedCandidat = (props: Application) => (
       future.
     </TextParagraph>
 
-    <TextParagraph>
-      We wish you the best of luck in your future!
-    </TextParagraph>
+    <TextParagraph>We wish you the best of luck in your future!</TextParagraph>
   </CoreMail>
 );
 

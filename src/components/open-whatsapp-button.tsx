@@ -6,9 +6,7 @@ interface OpenWhatsappButtonProps {
   phoneNumber: string;
 }
 
-export function OpenWhatsappButton({
-  phoneNumber,
-}: OpenWhatsappButtonProps) {
+export function OpenWhatsappButton({ phoneNumber }: OpenWhatsappButtonProps) {
   const formatted = parsePhoneNumber(phoneNumber, 'CM');
 
   return (

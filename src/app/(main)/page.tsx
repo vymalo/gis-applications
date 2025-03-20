@@ -1,4 +1,3 @@
-import { Logout } from '@app/components/logout';
 import { ToApplication } from '@app/components/to-application';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';

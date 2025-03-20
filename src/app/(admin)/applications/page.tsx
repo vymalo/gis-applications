@@ -8,7 +8,11 @@ interface SearchParams {
   groupBy: string;
 }
 
-export default async function Applications({ searchParams }: { searchParams: Promise<SearchParams> }) {
+export default async function Applications({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const { page, size, q, groupBy } = await searchParams;
   void api.application.getSome.prefetch({
     groupBy: 'data.firstName',
