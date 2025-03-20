@@ -95,7 +95,7 @@ export function AdminSingleApplication({
           ID card or passport or receipt
         </div>
         <div className='col-span-full grid grid-cols-2 gap-4'>
-          {data?.iDCartOrPassportOrReceipt?.map(({ name, publicUrl }) => (
+          {data?.iDCartOrPassportOrReceipt?.map(({ name, publicUrl }: any) => (
             <DocumentComment
               applicationId={applicationId}
               publicUrl={publicUrl}
@@ -111,31 +111,35 @@ export function AdminSingleApplication({
         <div className='col-span-1 opacity-50'>Whatsapp</div>
         <div className='col-span-1 opacity-50'>Normal calls</div>
 
-        {data.phoneNumbers.map(({ phoneNumber, whatsappCall, normalCall }) => (
-          <Fragment key={phoneNumber}>
-            <div className='col-span-2 flex flex-row items-center gap-2'>
-              <FormattedPhoneNumber phoneNumber={phoneNumber} />
+        {data.phoneNumbers.map(
+          ({ phoneNumber, whatsappCall, normalCall }: any) => (
+            <Fragment key={phoneNumber}>
+              <div className='col-span-2 flex flex-row items-center gap-2'>
+                <FormattedPhoneNumber phoneNumber={phoneNumber} />
 
-              {normalCall && <PhoneTelButton phoneNumber={phoneNumber} />}
+                {normalCall && <PhoneTelButton phoneNumber={phoneNumber} />}
 
-              {whatsappCall && <OpenWhatsappButton phoneNumber={phoneNumber} />}
-            </div>
-            <div className='col-span-1'>
-              {whatsappCall ? (
-                <Check className='text-success' />
-              ) : (
-                <X className='text-error' />
-              )}
-            </div>
-            <div className='col-span-1'>
-              {normalCall ? (
-                <Check className='text-success' />
-              ) : (
-                <X className='text-error' />
-              )}
-            </div>
-          </Fragment>
-        ))}
+                {whatsappCall && (
+                  <OpenWhatsappButton phoneNumber={phoneNumber} />
+                )}
+              </div>
+              <div className='col-span-1'>
+                {whatsappCall ? (
+                  <Check className='text-success' />
+                ) : (
+                  <X className='text-error' />
+                )}
+              </div>
+              <div className='col-span-1'>
+                {normalCall ? (
+                  <Check className='text-success' />
+                ) : (
+                  <X className='text-error' />
+                )}
+              </div>
+            </Fragment>
+          ),
+        )}
 
         <div className='divider col-span-full'>Contact</div>
 
@@ -165,7 +169,7 @@ export function AdminSingleApplication({
         </div>
         <div className='col-span-full grid grid-cols-2 gap-4'>
           {data.highSchoolGceOLProbatoireCertificates?.map(
-            ({ name, publicUrl }) => (
+            ({ name, publicUrl }: any) => (
               <DocumentComment
                 applicationId={applicationId}
                 publicUrl={publicUrl}
@@ -184,7 +188,7 @@ export function AdminSingleApplication({
             </div>
             <div className='col-span-full grid grid-cols-2 gap-4'>
               {data.highSchoolGceALBACCertificates?.map(
-                ({ name, publicUrl }) => (
+                ({ name, publicUrl }: any) => (
                   <DocumentComment
                     applicationId={applicationId}
                     publicUrl={publicUrl}
@@ -222,7 +226,7 @@ export function AdminSingleApplication({
               Your university certificate(s)
             </div>
             <div className='col-span-full grid grid-cols-2 gap-4'>
-              {data.universityCertificates?.map(({ name, publicUrl }) => (
+              {data.universityCertificates?.map(({ name, publicUrl }: any) => (
                 <DocumentComment
                   applicationId={applicationId}
                   publicUrl={publicUrl}

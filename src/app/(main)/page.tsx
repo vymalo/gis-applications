@@ -1,7 +1,7 @@
 import { ToApplication } from '@app/components/to-application';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
 import Link from 'next/link';
 import { ArrowRight } from 'react-feather';
 

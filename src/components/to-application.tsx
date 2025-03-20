@@ -1,4 +1,4 @@
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'react-feather';

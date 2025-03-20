@@ -3,7 +3,7 @@ import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
 import { SingleApply } from '@app/components/single-apply';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
 import { AlertTriangle } from 'react-feather';
 
 export default async function ApplyNow() {

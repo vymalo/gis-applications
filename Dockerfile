@@ -43,6 +43,11 @@ ENV S3_SCHEME="https"
 ENV S3_BUCKET="sschool"
 ENV S3_CDN_URL="https://some.cdn.com"
 
+ENV SMTP_URL="smtp://localhost:8025"
+ENV SMTP_FROM="Sender Name <sender@server.com>"
+ENV SMTP_CC="GIS Group <cc@server.com>"
+ENV SMTP_REPLY_TO="Stephane Segning <stephane@segning.com>"
+
 COPY --from=deps /app/deps ./node_modules
 
 RUN \

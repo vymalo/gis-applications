@@ -10,7 +10,7 @@ export function useUpdateParams() {
     (paramsVK: Record<string, string | number | null | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
       for (const [name, value] of Object.entries(paramsVK)) {
-        params.set(name, value);
+        params.set(name, value as string);
       }
 
       router.push(pathname + '?' + params.toString());

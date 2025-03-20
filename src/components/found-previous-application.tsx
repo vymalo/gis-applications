@@ -1,7 +1,7 @@
 'use client';
 
 import { ToApplication } from '@app/components/to-application';
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
 import { useState } from 'react';
 import { X } from 'react-feather';
 

@@ -1,19 +1,14 @@
 'use client';
 
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { ApplicationStatusAvatar } from '@app/components/application-status-avatar';
+import { ApplicationListItem } from '@app/components/application-list-item';
 import { BatchActions } from '@app/components/batch-actions';
-import { DATE_FORMAT } from '@app/components/inputs/utils';
-import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
-import { PhoneTelButton } from '@app/components/phone-tel-button';
 import { SearchField } from '@app/components/search-field';
 import { useUpdateParams } from '@app/hooks/query';
 import { api } from '@app/trpc/react';
 import { StatusMapping } from '@app/utils/status-mapping';
-import moment from 'moment';
-import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Eye, Send, Sliders } from 'react-feather';
+import { ArrowLeft, ArrowRight, Send, Sliders } from 'react-feather';
 import { twMerge } from 'tailwind-merge';
 
 export interface LatestApplicationProps {
@@ -100,56 +95,15 @@ export function LatestApplication(props: LatestApplicationProps) {
               <div key={key}>
                 <li className='p-4 pb-2 text-xs opacity-60 tracking-wide'>
                   <div className='flex flex-row items-center gap-2'>
-                    {groupBy === 'status' ? StatusMapping[key] : key}{' '}
+                    {groupBy === 'status' ? (StatusMapping as any)[key] : key}{' '}
                     <span className='badge badge-primary badge-sm'>
                       {values.length}
                     </span>
                   </div>
                 </li>
 
-                {values.map(({ id, data, email, status, createdAt, meta }) => (
-                  <li className='list-row' key={id}>
-                    <ApplicationStatusAvatar
-                      name={`${data.firstName} ${data.lastName}`}
-                      status={status}
-                      notified={
-                        meta?.status?.invited?.[status] ?? status === 'INIT'
-                      }
-                    />
-
-                    <div className='flex flex-col gap-1'>
-                      <div>
-                        {data.firstName} {data.lastName}
-                      </div>
-                      <div className='text-xs font-semibold opacity-50'>
-                        {email}
-                      </div>
-                      <div className='text-xs'>
-                        {moment(createdAt).format(DATE_FORMAT)}
-                      </div>
-                    </div>
-                    <div className='flex flex-row gap-2 items-center'>
-                      {data?.phoneNumbers?.map(
-                        ({ phoneNumber, whatsappCall, normalCall }) => (
-                          <Fragment key={phoneNumber}>
-                            {normalCall && (
-                              <PhoneTelButton phoneNumber={phoneNumber} />
-                            )}
-
-                            {whatsappCall && (
-                              <OpenWhatsappButton phoneNumber={phoneNumber} />
-                            )}
-                          </Fragment>
-                        ),
-                      )}
-
-                      <Link
-                        href={`/applications/${id}`}
-                        className='btn btn-circle btn-soft btn-primary btn-sm'>
-                        <Eye />
-                      </Link>
-                    </div>
-                  </li>
+                {values.map((application) => (
+                  <ApplicationListItem {...application} key={application.id} />
                 ))}
               </div>
             ))}
