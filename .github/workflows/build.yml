@@ -65,7 +65,6 @@ jobs:
             type=sha,format=long,prefix={{branch}}
           flavor: |
             latest=auto
-            suffix=-${{ matrix.environment.name }},onlatest=true
           images: '${{ env.REGISTRY }}/${{ steps.string.outputs.lowercase }}'
 
       - name: Cache Docker layers
