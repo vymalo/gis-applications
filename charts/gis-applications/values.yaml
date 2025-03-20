@@ -16,7 +16,7 @@ app:
         app:
           image:
             repository: ghcr.io/adorsys-gis/gis-applications
-            tag: 2025.03.20
+            tag: 2025.3.20
             pullPolicy: IfNotPresent
 
           # -- ConfigMap to be loaded as environment variables
