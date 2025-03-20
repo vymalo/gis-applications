@@ -1,9 +1,15 @@
-import type { Application, User } from '@prisma/client';
-
 declare global {
   namespace PrismaJson {
     type AppJsonType = string | Record<string, AppJsonType>;
   }
+}
+
+declare module 'app-types' {
+  import type { Application, User } from '@prisma/client';
+
+  declare type ApplicationUser = Omit<Application, 'createdById'> & {
+    createdBy: User | null;
+  };
 }
 
 declare module 'next-compose-plugins' {
@@ -16,7 +22,3 @@ declare module 'next-compose-plugins' {
     nextConfig: NextConfig,
   ): NextConfig;
 }
-
-declare type ApplicationUser = Omit<Application, 'createdById'> & {
-  createdBy: User | null;
-};

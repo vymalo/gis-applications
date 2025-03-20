@@ -3,7 +3,8 @@ import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
 import { SingleApply } from '@app/components/single-apply';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
+import { AlertTriangle } from 'react-feather';
 
 export default async function ApplyNow() {
   const session = await auth();
@@ -17,10 +18,18 @@ export default async function ApplyNow() {
     <HydrateClient>
       <main className='flex flex-col gap-4'>
         {application.length === 1 && (
-          <FoundPreviousApplication application={application[0]} />
+          <FoundPreviousApplication application={application[0]!} />
         )}
-        {!session?.user && <LoginToKeepTrack />}
-        <SingleApply />
+        {!session?.user && (
+          <>
+            <div role='alert' className='alert alert-info'>
+              <AlertTriangle />
+              <span>Logging in helps you track your application</span>
+            </div>
+            <LoginToKeepTrack />
+          </>
+        )}
+        <SingleApply user={session?.user} />
       </main>
     </HydrateClient>
   );

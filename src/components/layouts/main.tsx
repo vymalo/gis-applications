@@ -2,7 +2,7 @@ import { MainFooter } from '@app/components/layouts/main-footer';
 import { MainHeader } from '@app/components/layouts/main-header';
 import { type PropsWithChildren } from 'react';
 
-export function MainLayout({ children }: PropsWithChildren) {
+export async function MainLayout({ children }: PropsWithChildren) {
   return (
     <>
       <MainHeader />

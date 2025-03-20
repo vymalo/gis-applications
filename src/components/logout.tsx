@@ -8,8 +8,7 @@ export function Logout() {
         'use server';
         await signOut();
       }}>
-      <button className='btn btn-soft btn-error' type='submit'>
-        <span>Sign out</span>
+      <button className='btn btn-soft btn-error btn-circle' type='submit'>
         <LogOut />
       </button>
     </form>

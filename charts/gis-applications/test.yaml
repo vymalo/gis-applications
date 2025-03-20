@@ -1,0 +1,235 @@
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: monitoring
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: main
+      app.kubernetes.io/instance: monitoring
+      app.kubernetes.io/name: monitoring
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: gis-lms-backend
+      ports:
+        - port: 3000
+          protocol: TCP
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-auth
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+  annotations:
+    description: Auth configuration for the GIS Application app.
+stringData:
+  AUTH_KEYCLOAK_ID: 'gis-applications'
+  AUTH_KEYCLOAK_SECRET: 'someSecret'
+  AUTH_SECRET: 'gfhZ+94pqhGDi03RCD/6klIbTd92V5yA8G+oEN9c6pk='
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-db
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+  annotations:
+    description: Auth configuration for the GIS Application app.
+stringData:
+  DATABASE_URL: 'postgresql://gisapply:gisapply-password@localhost:5432/gisapply?schema=public'
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-s3
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+  annotations:
+    description: S3 configuration for the GIS Application app.
+stringData:
+  S3_ACCESS_KEY: 'minio'
+  S3_SECRET_KEY: 'minio123'
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-smtp
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+  annotations:
+    description: SMTP configuration for the GIS Application app.
+stringData:
+  SMTP_URL: 'smtp+ssl://user:password@smtp.example:582'
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-config
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+  annotations:
+    description: Common configuration for the GIS Application app.
+data:
+  APP_LAST_APPLICATION_DATE: '2026-01-31'
+  APP_URL: https://apply.example.com
+  AUTH_KEYCLOAK_ISSUER: https://kec.example.com/realms/main
+  AUTH_SESSION_MAX_AGE: '2592000'
+  AUTH_SESSION_UPDATE_AGE: '2592000'
+  S3_BUCKET: gis-applications
+  S3_CDN_URL: https://s3.example.com
+  S3_ENDPOINT: s3.example.com
+  S3_PORT: '443'
+  S3_SCHEME: https
+  SMTP_CC: GIS Group <cc@server.com>
+  SMTP_FROM: Sender Name <sender@server.com>
+  SMTP_REPLY_TO: Stephane Segning <stephane@segning.com>
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitoring-service
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/service: monitoring-service
+    helm.sh/chart: app-3.6.1
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/component: main
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/name: monitoring
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring
+  labels:
+    app: gis-application
+    app.kubernetes.io/component: main
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: main
+      app.kubernetes.io/name: monitoring
+      app.kubernetes.io/instance: monitoring
+  template:
+    metadata:
+      annotations:
+        checksum/configMaps: b936a82b659db844d1b80d8847fbb4fbc6a7d6865d8d992a1329324c6f3de328
+        checksum/secrets: 331dfb145f059284a59c70e8911cf5728f12bd0c2c712b8b4c1f2ae7c458c796
+      labels:
+        app.kubernetes.io/component: main
+        app.kubernetes.io/instance: monitoring
+        app.kubernetes.io/name: monitoring
+    spec:
+      enableServiceLinks: false
+      serviceAccountName: default
+      automountServiceAccountToken: true
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      dnsPolicy: ClusterFirst
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: monitoring-config
+            - secretRef:
+                name: monitoring-s3
+            - secretRef:
+                name: monitoring-smtp
+            - secretRef:
+                name: monitoring-auth
+            - secretRef:
+                name: monitoring-db
+          image: ghcr.io/adorsys-gis/gis-applications:2025.03.20
+          imagePullPolicy: IfNotPresent
+          name: app
+---
+# Source: gis-lms-backend/charts/app/templates/common.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  labels:
+    app: gis-application
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: monitoring
+    helm.sh/chart: app-3.6.1
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - 'apply.example.com'
+      secretName: 'apply-example-com-secret'
+  rules:
+    - host: 'apply.example.com'
+      http:
+        paths:
+          - path: '/'
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-service
+                port:
+                  number: 3000

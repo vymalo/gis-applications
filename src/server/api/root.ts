@@ -1,5 +1,6 @@
 import { applicationRouter } from '@app/server/api/routers/application';
 import { createCallerFactory, createTRPCRouter } from '@app/server/api/trpc';
+import { mailRouter } from './routers/mail';
 import { uploadRouter } from './routers/upload';
 
 /**
@@ -10,6 +11,7 @@ import { uploadRouter } from './routers/upload';
 export const appRouter = createTRPCRouter({
   application: applicationRouter,
   upload: uploadRouter,
+  mail: mailRouter,
 });
 
 // export type definition of API

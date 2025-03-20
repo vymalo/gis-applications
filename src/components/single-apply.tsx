@@ -14,11 +14,12 @@ import {
 import { api } from '@app/trpc/react';
 import { type Application } from '@prisma/client';
 import { FieldArray, Form, Formik } from 'formik';
+import type { User } from 'next-auth';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Minus, Plus } from 'react-feather';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-import {useRouter} from 'next/navigation'
 
 const Schema = z.object({
   email: z.string().email(),
@@ -44,11 +45,11 @@ const Schema = z.object({
       city: z.string(),
       whereAreYou: z.string().optional(),
     })
+    .passthrough()
     .required(),
 });
 
 interface Values {
-  id: string | null;
   email: string;
   data: {
     firstName: string;
@@ -68,6 +69,8 @@ interface Values {
     universityStartDate: Date;
     universityEndDate: Date;
     universityCertificates: Date;
+    hasIDCartOrPassport: boolean;
+    iDCartOrPassportOrReceipt: any[];
   };
 }
 
@@ -79,7 +82,10 @@ export type SingleApplyProps =
       application: Application;
     };
 
-export function SingleApply({ application = null }: SingleApplyProps) {
+export function SingleApply({
+  application = null,
+  user = undefined,
+}: SingleApplyProps & { user?: User }) {
   const { mutateAsync } = api.application.save.useMutation();
   const router = useRouter();
 
@@ -87,7 +93,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
     <Formik<Values>
       validationSchema={toFormikValidationSchema(Schema)}
       initialValues={{
-        email: application?.email ?? '',
+        email: application?.email ?? user?.email ?? '',
         data: application?.data ?? {
           firstName: '',
           lastName: '',
@@ -97,20 +103,21 @@ export function SingleApply({ application = null }: SingleApplyProps) {
           country: 'cameroon',
           city: '',
           whereAreYou: '',
+          hasIDCartOrPassport: '',
+          iDCartOrPassportOrReceipt: [],
+          highSchoolOver: '',
         },
       }}
-      onSubmit={async ({ id: _, ...rest }, { resetForm, setSubmitting }) => {
+      onSubmit={async (values, { resetForm, setSubmitting }) => {
         setSubmitting(true);
-        const { id } = await mutateAsync({ ...rest, id: application?.id });
+        const { id } = await mutateAsync({ ...values, id: application?.id });
         resetForm();
         router.push(`/apply/success?application_id=${id}`);
         setSubmitting(false);
       }}>
       {({ values }) => (
         <Form className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-          <h1 className='app-title md:col-span-2'>
-            Single Apply
-          </h1>
+          <h1 className='app-title md:col-span-2'>Single Apply</h1>
           <p className='md:col-span-2'>
             You shall apply for the GIS Program here. If any question, please
             review the{' '}
@@ -118,7 +125,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
               target='_blank'
               rel='canonical'
               href='/res/faq'
-              className='link'>
+              className='link link-primary'>
               FAQ
             </Link>{' '}
             page.
@@ -134,7 +141,12 @@ export function SingleApply({ application = null }: SingleApplyProps) {
             name='data.lastName'
             autoComplete='family-name'
           />
-          <TextInputComponent label='Email' name='email' type='email' />
+          <TextInputComponent
+            label='Email'
+            name='email'
+            type='email'
+            disabled={!!user}
+          />
           <DateInputComponent
             label='Birth date'
             name='data.birthDate'
@@ -156,7 +168,9 @@ export function SingleApply({ application = null }: SingleApplyProps) {
 
           <div className='col-span-full'>
             <div className='label'>
-              <span className='label-text'>Phone numbers</span>
+              <span className='label-text text-base-content'>
+                Phone numbers
+              </span>
             </div>
 
             <FieldArray
@@ -168,7 +182,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                       key={index}
                       className='flex w-full flex-col items-end gap-4'>
                       <TextInputComponent
-                        label='Number'
+                        label='Number (without +237)'
                         name={`data.phoneNumbers.${index}.phoneNumber`}
                       />
                       <ToggleInputComponent
@@ -192,7 +206,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                   <div className='md:col-span-2'>
                     <button
                       type='button'
-                      className='btn btn-soft btn-primary btn-circle'
+                      className='btn btn-soft btn-primary'
                       onClick={() =>
                         arrayHelpers.push({
                           phoneNumber: '',
@@ -200,6 +214,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                           normalCall: false,
                         })
                       }>
+                      <span>Add a phone number</span>
                       <Plus />
                     </button>
                   </div>
@@ -224,6 +239,23 @@ export function SingleApply({ application = null }: SingleApplyProps) {
             </div>
           </div>
 
+          <div className='divider col-span-full'>Identity</div>
+
+          <div className='col-span-full'>
+            <ToggleInputComponent
+              label='Have a national ID card or passport?'
+              name='data.hasIDCartOrPassport'
+            />
+          </div>
+          <div className='col-span-full'>
+            <FileInputComponent
+              label='ID card or passport or receipt'
+              name='data.iDCartOrPassportOrReceipt'
+              accept='image/png,image/jpeg,image/jpg '
+              max={5}
+            />
+          </div>
+
           <div className='divider col-span-full'>Education</div>
 
           <div className='col-span-full flex flex-col gap-4'>
@@ -241,7 +273,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
             <FileInputComponent
               label='Your GCE O/L or Probatoire certificate(s)'
               name='data.highSchoolGceOLProbatoireCertificates'
-              accept='image/png,image/jpeg,image/jpg,application/pdf'
+              accept='image/png,image/jpeg,image/jpg '
               max={10}
             />
 
@@ -256,7 +288,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 <FileInputComponent
                   label='Your GCE A/L or BAC certificate(s)'
                   name='data.highSchoolGceALBACCertificates'
-                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  accept='image/png,image/jpeg,image/jpg '
                   max={10}
                 />
               </>
@@ -286,7 +318,7 @@ export function SingleApply({ application = null }: SingleApplyProps) {
                 <FileInputComponent
                   label='Your university certificate(s)'
                   name='data.universityCertificates'
-                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  accept='image/png,image/jpeg,image/jpg '
                   max={10}
                 />
               </>

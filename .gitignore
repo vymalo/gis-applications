@@ -46,8 +46,11 @@ yarn-error.log*
 .idea
 
 generated
+gen
 
 *.gz
+*.tgz
 
 public/sw.js
 public/workbox-*.js
+

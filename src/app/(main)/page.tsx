@@ -1,8 +1,7 @@
-import { Logout } from '@app/components/logout';
 import { ToApplication } from '@app/components/to-application';
 import { auth } from '@app/server/auth';
 import { api, HydrateClient } from '@app/trpc/server';
-import { type ApplicationUser } from '@app/types';
+import { type ApplicationUser } from 'app-types';
 import Link from 'next/link';
 import { ArrowRight } from 'react-feather';
 
@@ -16,20 +15,18 @@ export default async function Home() {
   return (
     <HydrateClient>
       <main className='flex flex-col gap-4'>
-        <p>Welcome!</p>
+        <p>Welcome! Here you can apply for our GIS Training Center</p>
 
         {applications.length > 0 && (
-          <div>
+          <div className='flex flex-col gap-4'>
             <p>You have one application in progress</p>
             <div>
-              <ToApplication application={applications[0]} />
+              <ToApplication application={applications[0]!} />
             </div>
             <p>
               To start a new application, you need to logout and login using
               another account
             </p>
-
-            <Logout />
           </div>
         )}
 
