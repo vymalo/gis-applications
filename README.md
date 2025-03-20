@@ -1,5 +1,9 @@
 # GIS Application
 
+[![Build Docker](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/build.yml/badge.svg)](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/build.yml)
+[![Dependabot Updates](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/dependabot/dependabot-updates)
+[![Helm Publish](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/helm-publish.yml/badge.svg)](https://github.com/ADORSYS-GIS/gis-applications/actions/workflows/helm-publish.yml)
+
 ## V 2025.03.13
 
 This version is the base layout.
