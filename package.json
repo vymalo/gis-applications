@@ -28,7 +28,7 @@
     "@auth/prisma-adapter": "^2.7.2",
     "@docuseal/react": "^1.0.54",
     "@ducanh2912/next-pwa": "^10.2.9",
-    "@next/bundle-analyzer": "^15.1.7",
+    "@next/bundle-analyzer": "^15.2.3",
     "@opentelemetry/api-logs": "^0.57.2",
     "@opentelemetry/exporter-trace-otlp-http": "^0.57.2",
     "@opentelemetry/instrumentation": "^0.57.2",
