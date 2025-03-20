@@ -32,6 +32,7 @@ export const env = createEnv({
 
     SMTP_URL: z.string().url(),
     SMTP_FROM: z.string(),
+    SMTP_CC: z.string().optional(),
     SMTP_REPLY_TO: z.string(),
 
     AUTH_SESSION_MAX_AGE: z.string().transform(Number),
@@ -73,6 +74,7 @@ export const env = createEnv({
 
     SMTP_URL: process.env.SMTP_URL,
     SMTP_FROM: process.env.SMTP_FROM,
+    SMTP_CC: process.env.SMTP_CC,
     SMTP_REPLY_TO: process.env.SMTP_REPLY_TO,
 
     AUTH_SESSION_MAX_AGE: process.env.AUTH_SESSION_MAX_AGE,

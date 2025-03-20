@@ -55,15 +55,6 @@ services:
       MINIO_BROWSER_SESSION_DURATION: ${MINIO_BROWSER_SESSION_DURATION:-7d}
       MINIO_BROWSER_LOGIN_ANIMATION: ${MINIO_BROWSER_LOGIN_ANIMATION:-off}
 
-  tracking:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - '4318:4318' # OpenTelemetry receiver
-      - '14268:14268' # Jaeger receiver
-      - '16686:16686' # Jaeger UI
-    environment:
-      COLLECTOR_OTLP_ENABLED: 'true'
-
   maildev:
     image: maildev/maildev
     restart: always
@@ -74,7 +65,3 @@ services:
     ports:
       - "8080:1080"
       - "8025:1025"
-
-#volumes:
-#db: { }
-#minio: { }

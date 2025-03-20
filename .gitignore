@@ -48,6 +48,7 @@ yarn-error.log*
 generated
 
 *.gz
+*.tgz
 
 public/sw.js
 public/workbox-*.js

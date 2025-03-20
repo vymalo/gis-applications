@@ -26,6 +26,7 @@ export async function getSendPhoneInterviewOptions({
 
   return {
     from: env.SMTP_FROM,
+    cc: env.SMTP_CC,
     replyTo: env.SMTP_REPLY_TO,
     to: application.email,
     subject: '[GIS] Invitation to Phone interview!',
@@ -53,6 +54,7 @@ export async function getSendOnsiteInterviewOptions({
 
   return {
     from: env.SMTP_FROM,
+    cc: env.SMTP_CC,
     replyTo: env.SMTP_REPLY_TO,
     to: application.email,
     subject: '[GIS] Invitation to OnSite Interview!',
@@ -80,6 +82,7 @@ export async function getAcceptedOptions({
 
   return {
     from: env.SMTP_FROM,
+    cc: env.SMTP_CC,
     replyTo: env.SMTP_REPLY_TO,
     to: application.email,
     subject: '[GIS] Welcome to GIS Training!',
@@ -107,6 +110,7 @@ export async function getRejectedOptions({
 
   return {
     from: env.SMTP_FROM,
+    cc: env.SMTP_CC,
     replyTo: env.SMTP_REPLY_TO,
     to: application.email,
     subject: '[GIS] Sorry!',
