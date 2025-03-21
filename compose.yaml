@@ -57,7 +57,6 @@ services:
 
   maildev:
     image: maildev/maildev
-    restart: always
     environment:
       - TZ=Europe/Berlin
       - MAILDEV_WEB_PORT=1080
