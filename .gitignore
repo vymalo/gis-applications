@@ -50,6 +50,7 @@ gen
 
 *.gz
 *.tgz
+test.yaml
 
 public/sw.js
 public/workbox-*.js
