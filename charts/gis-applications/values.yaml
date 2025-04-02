@@ -50,7 +50,7 @@ app:
       enabled: true
       annotations: {}
       nameOverride: ingress
-      className: 'nginx'
+      #className: 'nginx'
       hosts:
         - host: apply.example.com
           paths:
