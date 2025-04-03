@@ -64,3 +64,10 @@ services:
     ports:
       - '8080:1080'
       - '8025:1025'
+
+  migrations:
+    build:
+      context: ./
+      dockerfile: companions/migrations/Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://gisapply:gisapply-password@postgres:5432/gisapply?schema=public"

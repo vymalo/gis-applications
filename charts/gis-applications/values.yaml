@@ -1,8 +1,10 @@
-app:
-  global:
-    labels:
-      app: gis-application
+global:
+  version: "2025.4.4"
+  labels:
+    app: gis-application
+    team: adorsys-gis
 
+app:
   defaultPodOptions:
     securityContext:
       runAsUser: 1000
@@ -12,11 +14,20 @@ app:
     main:
       type: deployment
       replicas: 1
+      initContainers:
+        migrations:
+          image:
+            repository: ghcr.io/adorsys-gis/gis-applications-migrations
+            tag: "{{ .Values.global.version }}"
+            pullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: '{{ .Release.Name }}-db'
       containers:
         app:
           image:
             repository: ghcr.io/adorsys-gis/gis-applications
-            tag: 2025.4.3
+            tag: "{{ .Values.global.version }}"
             pullPolicy: IfNotPresent
 
           # -- ConfigMap to be loaded as environment variables
@@ -31,11 +42,13 @@ app:
                 name: '{{ .Release.Name }}-auth'
             - secretRef:
                 name: '{{ .Release.Name }}-db'
+            - secretRef:
+                name: '{{ .Release.Name }}-ai'
 
   service:
     app:
       enabled: true
-      annotations: {}
+      annotations: { }
       nameOverride: service
       type: ClusterIP
       controller: main
@@ -48,7 +61,7 @@ app:
   ingress:
     app:
       enabled: true
-      annotations: {}
+      annotations: { }
       nameOverride: ingress
       #className: 'nginx'
       hosts:
@@ -117,6 +130,10 @@ app:
         description: 'Auth configuration for the GIS Application app.'
       stringData:
         DATABASE_URL: 'postgresql+ssl://gisapply:gisapply-password@localhost:5432/gisapply?schema=public'
+    ai:
+      stringData:
+        OPENAI_KEY: ""
+        OPENAI_URL: ""
 
   networkpolicies:
     main:
