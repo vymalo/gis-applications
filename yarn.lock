@@ -2194,7 +2194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api-logs@npm:0.200.0":
+"@opentelemetry/api-logs@npm:0.200.0, @opentelemetry/api-logs@npm:^0.200.0":
   version: 0.200.0
   resolution: "@opentelemetry/api-logs@npm:0.200.0"
   dependencies:
@@ -2203,7 +2203,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api-logs@npm:0.57.2, @opentelemetry/api-logs@npm:^0.57.2":
+"@opentelemetry/api-logs@npm:0.57.2":
   version: 0.57.2
   resolution: "@opentelemetry/api-logs@npm:0.57.2"
   dependencies:
@@ -6419,7 +6419,7 @@ __metadata:
     "@ducanh2912/next-pwa": "npm:^10.2.9"
     "@neshca/cache-handler": "npm:^1.9.0"
     "@next/bundle-analyzer": "npm:^15.2.3"
-    "@opentelemetry/api-logs": "npm:^0.57.2"
+    "@opentelemetry/api-logs": "npm:^0.200.0"
     "@opentelemetry/exporter-trace-otlp-http": "npm:^0.200.0"
     "@opentelemetry/instrumentation": "npm:^0.200.0"
     "@opentelemetry/resources": "npm:^2.0.0"
