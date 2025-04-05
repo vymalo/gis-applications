@@ -34,6 +34,10 @@ app:
           envFrom:
             - configMapRef:
                 name: '{{ .Release.Name }}-config'
+            - configMapRef:
+                name: '{{ .Release.Name }}-redis'
+            - configMapRef:
+                name: '{{ .Release.Name }}-otel'
             - secretRef:
                 name: '{{ .Release.Name }}-s3'
             - secretRef:
@@ -42,6 +46,8 @@ app:
                 name: '{{ .Release.Name }}-auth'
             - secretRef:
                 name: '{{ .Release.Name }}-db'
+            - secretRef:
+                name: '{{ .Release.Name }}-redis'
             - secretRef:
                 name: '{{ .Release.Name }}-ai'
 
@@ -101,6 +107,18 @@ app:
         SMTP_REPLY_TO: 'Stephane Segning <stephane@segning.com>'
 
         APP_LAST_APPLICATION_DATE: '2026-01-31'
+    redis:
+      enabled: true
+      annotations:
+        description: 'Redis configuration for the GIS Application app.'
+      data:
+        REDIS_PREFIX: 'sschool'
+    otel:
+      enabled: true
+      annotations:
+        description: 'OTEL configuration for the GIS Application app.'
+      data:
+        OTEL_EXPORTER_OTLP_ENDPOINT: 'https://otel.example.com'
 
   secrets:
     s3:
@@ -130,6 +148,9 @@ app:
         description: 'Auth configuration for the GIS Application app.'
       stringData:
         DATABASE_URL: 'postgresql+ssl://gisapply:gisapply-password@localhost:5432/gisapply?schema=public'
+    redis:
+      stringData:
+        REDIS_URL: 'redis://${redis_host}:${redis_port}'
     ai:
       stringData:
         OPENAI_KEY: ""

@@ -6,6 +6,16 @@ import './src/env.js';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+const shouldCache = (nextConfig: NextConfig): NextConfig => {
+  if (isDev) {
+    return nextConfig;
+  }
+  return {
+    ...nextConfig,
+    cacheHandler: require.resolve('./cache-handler.mjs'),
+  };
+};
+
 const shouldPwa = (nextConfig: NextConfig): NextConfig => {
   if (!isDev) {
     const withPWA = require('@ducanh2912/next-pwa').default({
@@ -82,6 +92,7 @@ export default withPlugins(
       }),
     ],
     [shouldPwa],
+    [shouldCache],
   ],
   nextConfig,
 );
