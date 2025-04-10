@@ -1,6 +1,6 @@
 import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
 import { Logout } from '@app/components/logout';
-import ThemeToggle from '@app/components/theme';
+import { ThemeToggle } from '@app/components/theme';
 import { auth } from '@app/server/auth';
 import Link from 'next/link';
 import { ArrowRight } from 'react-feather';

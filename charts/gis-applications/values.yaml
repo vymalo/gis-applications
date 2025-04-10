@@ -1,5 +1,5 @@
 global:
-  version: "2025.4.6"
+  version: "2025.4.10"
   labels:
     app: gis-application
     team: adorsys-gis
@@ -122,7 +122,7 @@ app:
       annotations:
         description: 'Redis configuration for the GIS Application app.'
       data:
-        REDIS_PREFIX: 'sschool'
+        REDIS_PREFIX: 'gis-applications:'
     otel:
       enabled: true
       annotations:

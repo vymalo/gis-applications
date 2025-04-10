@@ -1,5 +1,5 @@
 import { Logout } from '@app/components/logout';
-import ThemeToggle from '@app/components/theme';
+import { ThemeToggle } from '@app/components/theme';
 import { auth } from '@app/server/auth';
 import { type Metadata } from 'next';
 import Link from 'next/link';

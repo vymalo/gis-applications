@@ -2,6 +2,7 @@ import '@app/styles/globals.css';
 
 import { type Metadata } from 'next';
 
+import { ThemeProvider } from '@app/components/theme';
 import { TRPCReactProvider } from '@app/trpc/react';
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <ThemeProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

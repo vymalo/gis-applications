@@ -1,6 +1,8 @@
 import { loadRes } from '@app/server/md/utils';
 import { redirect } from 'next/navigation';
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   return [
     {},

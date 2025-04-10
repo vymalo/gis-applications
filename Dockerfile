@@ -42,7 +42,7 @@ ENV SKIP_ENV_VALIDATION=1
 ENV S3_ENDPOINT="localhost"
 ENV S3_PORT="19000"
 ENV S3_SCHEME="https"
-ENV S3_BUCKET="sschool"
+ENV S3_BUCKET="gis-applications"
 ENV S3_CDN_URL="https://some.cdn.com"
 
 ENV SMTP_URL="smtp://localhost:8025"

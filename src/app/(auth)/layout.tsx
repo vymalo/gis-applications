@@ -1,4 +1,4 @@
-import ThemeToggle from '@app/components/theme';
+import { ThemeToggle } from '@app/components/theme';
 import { type Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'react-feather';
