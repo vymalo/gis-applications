@@ -2807,13 +2807,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/debug@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@prisma/debug@npm:6.0.0"
-  checksum: 10c0/2adb1fe906ee12b0f39787ca9db39d6026e9611d9350a5b667a45bf3b6e5fa08d6f5d9a937286287eecb1a824292d156c093d3ae26c7db1a64fc3be3d085eadb
-  languageName: node
-  linkType: hard
-
 "@prisma/debug@npm:6.5.0":
   version: 6.5.0
   resolution: "@prisma/debug@npm:6.5.0"
@@ -2825,6 +2818,13 @@ __metadata:
   version: 6.6.0
   resolution: "@prisma/debug@npm:6.6.0"
   checksum: 10c0/49bed1c7f562b2a565637c5ba435ce81c337256791287c4c8923aa8ddb5724e625213614dc9b0ae5564a28018051e91f7426bca2182018d903c6579dec702a40
+  languageName: node
+  linkType: hard
+
+"@prisma/dmmf@npm:6.6.0":
+  version: 6.6.0
+  resolution: "@prisma/dmmf@npm:6.6.0"
+  checksum: 10c0/a3b0d7e1b0718b3fab3719f00ec88c7dfd46507a3405b8b283ab88e8897fb89c12f5d628cbe35b9fd3fc79586d087086ab95c3075410a10622f8fc38dba1e131
   languageName: node
   linkType: hard
 
@@ -2858,21 +2858,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/generator-helper@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@prisma/generator-helper@npm:6.0.0"
-  dependencies:
-    "@prisma/debug": "npm:6.0.0"
-  checksum: 10c0/7cf9b5d0e41f64deaf8893d8b9397ecfea17f09f9622cba2b27d463a007e9a5e691b92519ecc0f760670cdaf59fdd46affe6677d39187149954892a9f926bfdc
-  languageName: node
-  linkType: hard
-
 "@prisma/generator-helper@npm:^6.3.0":
   version: 6.5.0
   resolution: "@prisma/generator-helper@npm:6.5.0"
   dependencies:
     "@prisma/debug": "npm:6.5.0"
   checksum: 10c0/2a687b064a6b7dd05711ffa447fb114159d9be8abb2da50a1f1f165a08aab95bf913e923f38850b9d7f20d960badb474d756387f7c8680910d1304cc8a670d4f
+  languageName: node
+  linkType: hard
+
+"@prisma/generator-helper@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "@prisma/generator-helper@npm:6.6.0"
+  dependencies:
+    "@prisma/debug": "npm:6.6.0"
+    "@prisma/dmmf": "npm:6.6.0"
+    "@prisma/generator": "npm:6.6.0"
+  checksum: 10c0/6898bed6db1780aa53c018fb1129296a497e390074c04669b4fc8dec26aa2b8c9cdb2e21e3555c5bdbd312d5e6f1f45c2e9cd3dce8c73c701bea4b96e4ab9534
+  languageName: node
+  linkType: hard
+
+"@prisma/generator@npm:6.6.0":
+  version: 6.6.0
+  resolution: "@prisma/generator@npm:6.6.0"
+  checksum: 10c0/7fc1dbc9767d0a1461f3555b644582e5418df1c7611f10dc075600609801db197973bf7bd7aadb3cd27c19d9bc933c977ce1c865547403dcf98ab9ca176a8af6
   languageName: node
   linkType: hard
 
@@ -6616,7 +6625,7 @@ __metadata:
     prettier-plugin-organize-imports: "npm:^4.1.0"
     prettier-plugin-tailwindcss: "npm:^0.6.5"
     prisma: "npm:6.6.0"
-    prisma-json-types-generator: "npm:^3.2.2"
+    prisma-json-types-generator: "npm:^3.3.0"
     react: "npm:^19.1.0"
     react-dom: "npm:^18.3.1"
     react-email: "npm:^3.0.7"
@@ -9754,18 +9763,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma-json-types-generator@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "prisma-json-types-generator@npm:3.2.2"
+"prisma-json-types-generator@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "prisma-json-types-generator@npm:3.3.0"
   dependencies:
-    "@prisma/generator-helper": "npm:6.0.0"
-    tslib: "npm:2.8.1"
+    "@prisma/generator-helper": "npm:^6.6.0"
+    tslib: "npm:^2.8.1"
   peerDependencies:
-    prisma: ^5 || ^6
-    typescript: ^5.6.2
+    prisma: ^6.6
+    typescript: ^5.8
   bin:
     prisma-json-types-generator: index.js
-  checksum: 10c0/d232bb4397288ed2ac8a55c8194cb383b9b64a4e937676267f7cb2514533dc765ab256ba4b08aac3cb79d7bd2d1b3fc9bd108528b6e3f7e86545b7d328e0d8ca
+  checksum: 10c0/dd10f0a6011a2324a5c555bbac3c55888ed2c6281422fe8f8c50d75d8d1e5249d8a1bc09c4f1add32a03e20d77ba98a98459b91431626aa69a305adf416bf00d
   languageName: node
   linkType: hard
 
@@ -11323,7 +11332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.4.0, tslib@npm:^2.8.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.4.0, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
