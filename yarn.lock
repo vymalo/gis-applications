@@ -1220,10 +1220,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docuseal/react@npm:^1.0.54":
-  version: 1.0.61
-  resolution: "@docuseal/react@npm:1.0.61"
-  checksum: 10c0/2a5ab6f19f55f38cf9748e21b7a8bdf8eed31cca33fb83629affe8f9b04b6da1a97b22d7943e2fd9ee322041592582a3e6f68bbcfa4b2dbb07f910fcb24e9a76
+"@docuseal/react@npm:^1.0.66":
+  version: 1.0.66
+  resolution: "@docuseal/react@npm:1.0.66"
+  checksum: 10c0/fc713564843455622786929361b8144cd488374aaad76d0bdc7dac1d07f7b55858ff65dc6b68cfbd8ceb95433776ae155548d96480c09c405e517a739a8f6a86
   languageName: node
   linkType: hard
 
@@ -6560,7 +6560,7 @@ __metadata:
   resolution: "gis-applications@workspace:."
   dependencies:
     "@auth/prisma-adapter": "npm:^2.7.2"
-    "@docuseal/react": "npm:^1.0.54"
+    "@docuseal/react": "npm:^1.0.66"
     "@ducanh2912/next-pwa": "npm:^10.2.9"
     "@neshca/cache-handler": "npm:^1.9.0"
     "@next/bundle-analyzer": "npm:^15.2.3"
