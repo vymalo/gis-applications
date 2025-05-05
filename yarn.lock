@@ -2782,9 +2782,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^6.5.0":
-  version: 6.5.0
-  resolution: "@prisma/client@npm:6.5.0"
+"@prisma/client@npm:^6.7.0":
+  version: 6.7.0
+  resolution: "@prisma/client@npm:6.7.0"
   peerDependencies:
     prisma: "*"
     typescript: ">=5.1.0"
@@ -2793,7 +2793,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/2bf6a213bd65de20092b2773b9bb105f023558da2214e92542fe745255778dee8386068ec6648d0d651e0af7443ca69ed9278aa505c0342d39a30098fd0090d2
+  checksum: 10c0/863a8085800c8ada3247bc8b3f8a7056e341045f7f6fd73c7cd133b91298c8603f783869e5a7357d62394fa2ddac8c09ee27d7325bbb803a870edca5b914d33f
   languageName: node
   linkType: hard
 
@@ -6573,7 +6573,7 @@ __metadata:
     "@opentelemetry/sdk-trace-node": "npm:^1.30.1"
     "@opentelemetry/semantic-conventions": "npm:^1.30.0"
     "@paralleldrive/cuid2": "npm:^2.2.2"
-    "@prisma/client": "npm:^6.5.0"
+    "@prisma/client": "npm:^6.7.0"
     "@react-email/components": "npm:^0.0.34"
     "@react-email/render": "npm:^1.0.5"
     "@t3-oss/env-nextjs": "npm:^0.12.0"
