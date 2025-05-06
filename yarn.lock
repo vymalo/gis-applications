@@ -6609,7 +6609,7 @@ __metadata:
     next: "npm:^15.0.1"
     next-auth: "npm:5.0.0-beta.25"
     next-compose-plugins: "npm:^2.2.1"
-    nodemailer: "npm:^6.10.0"
+    nodemailer: "npm:^7.0.2"
     pikaday: "npm:^1.8.2"
     postcss: "npm:^8.5.2"
     prettier: "npm:^3.3.2"
@@ -8913,10 +8913,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.10.0":
-  version: 6.10.0
-  resolution: "nodemailer@npm:6.10.0"
-  checksum: 10c0/39fd35d65b021b94c968eeac82a66dd843021b6ba53c659d01b1dd4cda73b6a2f96e20facfe500efa4b8d3f1cb23df10245c6c86b2bde5f806691ed17ce87826
+"nodemailer@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "nodemailer@npm:7.0.2"
+  checksum: 10c0/97f5e45587ffe0657ee089f6feeebce7393a5c1f42e5fc28f165d3326b82f774bdbd010aebef342558eaf6f4057a838b7ba92438914ac852806e065aa9950eea
   languageName: node
   linkType: hard
 
