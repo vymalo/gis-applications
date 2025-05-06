@@ -102,7 +102,7 @@
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "6.6.0",
     "prisma-json-types-generator": "^3.3.1",
-    "react-email": "^3.0.7",
+    "react-email": "^4.0.11",
     "tailwindcss": "^4.0.6",
     "typescript": "^5.8.2",
     "zod-prisma-types": "^3.2.4"
