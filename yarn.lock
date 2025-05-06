@@ -2807,13 +2807,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/debug@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@prisma/debug@npm:6.0.0"
-  checksum: 10c0/2adb1fe906ee12b0f39787ca9db39d6026e9611d9350a5b667a45bf3b6e5fa08d6f5d9a937286287eecb1a824292d156c093d3ae26c7db1a64fc3be3d085eadb
-  languageName: node
-  linkType: hard
-
 "@prisma/debug@npm:6.5.0":
   version: 6.5.0
   resolution: "@prisma/debug@npm:6.5.0"
@@ -2825,6 +2818,20 @@ __metadata:
   version: 6.6.0
   resolution: "@prisma/debug@npm:6.6.0"
   checksum: 10c0/49bed1c7f562b2a565637c5ba435ce81c337256791287c4c8923aa8ddb5724e625213614dc9b0ae5564a28018051e91f7426bca2182018d903c6579dec702a40
+  languageName: node
+  linkType: hard
+
+"@prisma/debug@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@prisma/debug@npm:6.7.0"
+  checksum: 10c0/a35ff199c27d4caf60bbabccc859a1b54ba86991e10882f7400e50dd950a3bfa6d997d8e0a6d2d284da1929389fffc607459a5b3c78a754e2460635b2b9db180
+  languageName: node
+  linkType: hard
+
+"@prisma/dmmf@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@prisma/dmmf@npm:6.7.0"
+  checksum: 10c0/423e94f6105f68b650c394ed8a79e9701232c28648c69fbddf9e10aa94725fd4ae195a0e6f89f5e41888759246cf9a498f5d4ab2103298bf7b5aebe74ea2eacd
   languageName: node
   linkType: hard
 
@@ -2858,21 +2865,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/generator-helper@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@prisma/generator-helper@npm:6.0.0"
-  dependencies:
-    "@prisma/debug": "npm:6.0.0"
-  checksum: 10c0/7cf9b5d0e41f64deaf8893d8b9397ecfea17f09f9622cba2b27d463a007e9a5e691b92519ecc0f760670cdaf59fdd46affe6677d39187149954892a9f926bfdc
-  languageName: node
-  linkType: hard
-
 "@prisma/generator-helper@npm:^6.3.0":
   version: 6.5.0
   resolution: "@prisma/generator-helper@npm:6.5.0"
   dependencies:
     "@prisma/debug": "npm:6.5.0"
   checksum: 10c0/2a687b064a6b7dd05711ffa447fb114159d9be8abb2da50a1f1f165a08aab95bf913e923f38850b9d7f20d960badb474d756387f7c8680910d1304cc8a670d4f
+  languageName: node
+  linkType: hard
+
+"@prisma/generator-helper@npm:^6.6.0":
+  version: 6.7.0
+  resolution: "@prisma/generator-helper@npm:6.7.0"
+  dependencies:
+    "@prisma/debug": "npm:6.7.0"
+    "@prisma/dmmf": "npm:6.7.0"
+    "@prisma/generator": "npm:6.7.0"
+  checksum: 10c0/57820122547a31fcbd63d32d597813df03eca989ea63a426cfa6582d864b9958a01990d4e23add48879986e1694fea4ce666fd130af2416cf727d33a41ebf55c
+  languageName: node
+  linkType: hard
+
+"@prisma/generator@npm:6.7.0":
+  version: 6.7.0
+  resolution: "@prisma/generator@npm:6.7.0"
+  checksum: 10c0/6813e580b06ee0136737dca4f31ed819d84e9dd8fc84835c6c4bb7b631c1b70068a76518f9e7afffcd3394788c79804edd7e3cfcd9191e17e524017c06e7b19d
   languageName: node
   linkType: hard
 
@@ -6616,7 +6632,7 @@ __metadata:
     prettier-plugin-organize-imports: "npm:^4.1.0"
     prettier-plugin-tailwindcss: "npm:^0.6.5"
     prisma: "npm:6.6.0"
-    prisma-json-types-generator: "npm:^3.2.2"
+    prisma-json-types-generator: "npm:^3.3.1"
     react: "npm:^19.1.0"
     react-dom: "npm:^18.3.1"
     react-email: "npm:^3.0.7"
@@ -9754,18 +9770,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma-json-types-generator@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "prisma-json-types-generator@npm:3.2.2"
+"prisma-json-types-generator@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "prisma-json-types-generator@npm:3.3.1"
   dependencies:
-    "@prisma/generator-helper": "npm:6.0.0"
-    tslib: "npm:2.8.1"
+    "@prisma/generator-helper": "npm:^6.6.0"
+    tslib: "npm:^2.8.1"
   peerDependencies:
-    prisma: ^5 || ^6
-    typescript: ^5.6.2
+    prisma: ^6.6
+    typescript: ^5.8
   bin:
     prisma-json-types-generator: index.js
-  checksum: 10c0/d232bb4397288ed2ac8a55c8194cb383b9b64a4e937676267f7cb2514533dc765ab256ba4b08aac3cb79d7bd2d1b3fc9bd108528b6e3f7e86545b7d328e0d8ca
+  checksum: 10c0/f8c75d72f829c2e6751fe7b98eb09f58fcbbc7fe19c9ce524aa734769886d54ba5c0f05750eaf49e69300018adf2248463540ca07193c75e44eb2c65578e38f3
   languageName: node
   linkType: hard
 
@@ -11323,7 +11339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.4.0, tslib@npm:^2.8.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.4.0, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
