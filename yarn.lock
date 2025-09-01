@@ -2295,12 +2295,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/bundle-analyzer@npm:^15.2.3":
-  version: 15.2.3
-  resolution: "@next/bundle-analyzer@npm:15.2.3"
+"@next/bundle-analyzer@npm:^15.5.2":
+  version: 15.5.2
+  resolution: "@next/bundle-analyzer@npm:15.5.2"
   dependencies:
     webpack-bundle-analyzer: "npm:4.10.1"
-  checksum: 10c0/3e4391f4ce081cf09c87a2ce2c38a911a7899f09cc4691ff91c78d9ccea9386962970580cca56768d3cf8078da689de3466b96bd133520ba3ddaee3d70a0eb12
+  checksum: 10c0/3614051e86ee6782202f8bd7ae8dcdfc8f06eb3180d4d2e26dda3b3437d25e8bd1ca149c742f73ef71b02ffae8727156e76f17d2d823709a30fffde62fcbd1d5
   languageName: node
   linkType: hard
 
@@ -6750,7 +6750,7 @@ __metadata:
     "@docuseal/react": "npm:^1.0.66"
     "@ducanh2912/next-pwa": "npm:^10.2.9"
     "@neshca/cache-handler": "npm:^1.9.0"
-    "@next/bundle-analyzer": "npm:^15.2.3"
+    "@next/bundle-analyzer": "npm:^15.5.2"
     "@opentelemetry/api-logs": "npm:^0.200.0"
     "@opentelemetry/exporter-trace-otlp-http": "npm:^0.200.0"
     "@opentelemetry/instrumentation": "npm:^0.200.0"
