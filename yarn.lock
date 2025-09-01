@@ -5309,10 +5309,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"daisyui@npm:^5.0.19":
-  version: 5.0.19
-  resolution: "daisyui@npm:5.0.19"
-  checksum: 10c0/aecd87c2cafb41b5a519a8cef85afb64750225831062e1b74827255c5ebc633ce61ad74d63f5157a158684d321551590199c1666b9322c998d6c00130bec5137
+"daisyui@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "daisyui@npm:5.1.0"
+  checksum: 10c0/b1948ab93b706940d3fdba7cf3c56860ed1f36eb00ff3e8d027fbd7645b4deb62488dabb0b54da63afadc24da465e2d9e4e94779c45ea7af385dc05feb187e6d
   languageName: node
   linkType: hard
 
@@ -6784,7 +6784,7 @@ __metadata:
     autoprefixer: "npm:^10.4.20"
     axios: "npm:^1.9.0"
     cssnano: "npm:^7.0.6"
-    daisyui: "npm:^5.0.19"
+    daisyui: "npm:^5.1.0"
     eslint: "npm:^9.25.1"
     eslint-config-next: "npm:^15.2.3"
     formik: "npm:^2.4.6"
