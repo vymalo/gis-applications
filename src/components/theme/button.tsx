@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Moon, Sun } from 'react-feather';
 import { Context } from './context';
 
@@ -12,7 +12,7 @@ export default function ThemeToggle() {
     } else {
       setTheme('light');
     }
-  }, []);
+  }, [setTheme]);
 
   return (
     <label className='toggle toggle-lg text-base-content'>

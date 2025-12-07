@@ -1,11 +1,13 @@
 # GIS Application Configuration YAML File
 
-This YAML configuration file presents the small environment variables used in config maps and secrets for the GIS application. These variables are crucial for customizing the application's behavior and integrate with external services.
+This YAML configuration file presents the small environment variables used in config maps and secrets for the GIS
+application. These variables are crucial for customizing the application's behavior and integrate with external
+services.
 
 ## Table of Variables and Usage
 
 | Section      | Variable Name             | Description                                                        |
-| ------------ | ------------------------- | ------------------------------------------------------------------ |
+|--------------|---------------------------|--------------------------------------------------------------------|
 | ConfigMap    | AUTH_KEYCLOAK_ISSUER      | Keycloak issuer URL for authentication settings.                   |
 |              | AUTH_SESSION_MAX_AGE      | Maximum session age for Keycloak authentication.                   |
 |              | S3_ENDPOINT               | Endpoint URL for the S3 bucket.                                    |
@@ -21,7 +23,6 @@ This YAML configuration file presents the small environment variables used in co
 | Secret Names | S3_ACCESS_KEY             | Access key for the S3 bucket storage.                              |
 |              | S3_SECRET_KEY             | Secret key for authenticating with the S3 bucket.                  |
 |              | SMTP_URL                  | URL for the SMTP server connection.                                |
-|              | AUTH_SECRET               | Secret key for authentication and security.                        |
 |              | AUTH_KEYCLOAK_ID          | ID for the Keycloak client in the authentication flow.             |
 |              | AUTH_KEYCLOAK_SECRET      | Secret key linked to the Keycloak client for secure communication. |
 |              | DATABASE_URL              | Connection URL for the PostgreSQL database.                        |
@@ -71,7 +72,6 @@ secrets:
     annotations:
       description: 'Auth configuration for the GIS Application app.'
     stringData:
-      AUTH_SECRET: 'gfhZ+94pqhGDi03RCD/6klIbTd92V5yA8G+oEN9c6pk='
       AUTH_KEYCLOAK_ID: 'gis-applications'
       AUTH_KEYCLOAK_SECRET: 'someSecret'
   db:
@@ -88,4 +88,5 @@ secrets:
 helm apply ./values.yaml
 ```
 
-By executing the above steps, the GIS application will be tailored according to the config maps and secrets specified in the yaml file.
+By executing the above steps, the GIS application will be tailored according to the config maps and secrets specified in
+the yaml file.

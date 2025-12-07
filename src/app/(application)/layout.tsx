@@ -1,10 +1,11 @@
 import { Logout } from '@app/components/logout';
 import { ThemeToggle } from '@app/components/theme';
-import { auth } from '@app/server/auth';
+import { auth } from '@app/server/auth/better-auth';
 import { type Metadata } from 'next';
 import Link from 'next/link';
 import { type PropsWithChildren } from 'react';
 import { ArrowLeft } from 'react-feather';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Apply for GIS',
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return (
     <div className='container mx-auto max-w-xl p-4'>
       <div className='mb-2 flex flex-row items-center justify-between gap-4 md:mb-4'>

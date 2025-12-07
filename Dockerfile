@@ -1,4 +1,4 @@
-FROM node:23-alpine AS base
+FROM node:24-alpine AS base
 
 LABEL maintainer="Stephane Segning <selastlambou@gmail.com>"
 LABEL org.opencontainers.image.description="NextJS frontend for the Adorsys School"
@@ -58,14 +58,10 @@ RUN \
   --mount=type=bind,source=./prisma,target=/app/prisma \
   --mount=type=bind,source=./public/favicon.ico,target=/app/public/favicon.ico \
   --mount=type=bind,source=./src,target=/app/src \
-  --mount=type=bind,source=./.eslintignore,target=/app/.eslintignore \
-  --mount=type=bind,source=./.eslintrc.cjs,target=/app/.eslintrc.cjs \
   --mount=type=bind,source=./.yarnrc.yml,target=/app/.yarnrc.yml \
-  --mount=type=bind,source=./cache-handler.mjs,target=/app/cache-handler.mjs \
   --mount=type=bind,source=./next.config.ts,target=/app/next.config.ts \
   --mount=type=bind,source=./package.json,target=/app/package.json \
   --mount=type=bind,source=./postcss.config.js,target=/app/postcss.config.js \
-  --mount=type=bind,source=./prettier.config.js,target=/app/prettier.config.js \
   --mount=type=bind,source=./tsconfig.json,target=/app/tsconfig.json \
   --mount=type=bind,source=./yarn.lock,target=/app/yarn.lock \
   --mount=type=cache,target=/app/.next \

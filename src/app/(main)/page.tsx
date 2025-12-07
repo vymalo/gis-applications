@@ -1,12 +1,15 @@
 import { ToApplication } from '@app/components/to-application';
-import { auth } from '@app/server/auth';
+import { auth } from '@app/server/auth/better-auth';
 import { api, HydrateClient } from '@app/trpc/server';
 import { type ApplicationUser } from 'app-types';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { ArrowRight } from 'react-feather';
 
 export default async function Home() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   let applications: ApplicationUser[] = [];
   if (session?.user) {
     applications = await api.application.getUserApplication();

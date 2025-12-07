@@ -1,4 +1,5 @@
 import { AcceptedCandidat } from '@app/components/emails/accepted-candidat';
+import { MagicLinkEmail } from '@app/components/emails/magic-link';
 import { OnsiteInterview } from '@app/components/emails/onsite-interview';
 import { PhoneInterview } from '@app/components/emails/phone-interview';
 import { RejectedCandidat } from '@app/components/emails/rejected-candidat';
@@ -114,6 +115,36 @@ export async function getRejectedOptions({
     replyTo: env.SMTP_REPLY_TO,
     to: application.email,
     subject: '[GIS] Sorry!',
+    html,
+    text,
+  };
+}
+
+export async function getMagicLinkOptions({
+  email,
+  url,
+}: {
+  email: string;
+  url: string;
+}): Promise<SendMailOptions> {
+  const el = <MagicLinkEmail url={url} />;
+
+  const [html, text] = await Promise.all([
+    render(el, {
+      pretty: true,
+    }),
+    render(el, {
+      pretty: true,
+      plainText: true,
+    }),
+  ]);
+
+  return {
+    from: env.SMTP_FROM,
+    cc: env.SMTP_CC,
+    replyTo: env.SMTP_REPLY_TO,
+    to: email,
+    subject: '[GIS] Sign in to GIS Applications',
     html,
     text,
   };

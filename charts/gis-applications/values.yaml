@@ -149,7 +149,6 @@ app:
       annotations:
         description: 'Auth configuration for the GIS Application app.'
       stringData:
-        AUTH_SECRET: 'gfhZ+94pqhGDi03RCD/6klIbTd92V5yA8G+oEN9c6pk='
         AUTH_KEYCLOAK_ID: 'gis-applications'
         AUTH_KEYCLOAK_SECRET: 'someSecret'
     db:

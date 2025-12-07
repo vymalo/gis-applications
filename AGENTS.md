@@ -1,0 +1,100 @@
+# Agent Guidelines For This Project
+
+This file documents the principles and conventions that apply to this repository.  
+Any future automated changes (by tools or agents) must respect these rules.
+
+## Architecture Overview
+
+- Next.js App Router application (in `src/app`), with route groups:
+  - `(main)` for public pages (welcome, FAQ, etc.).
+  - `(application)` for the applicant flow (`/apply`, `/apply/[application_id]`, etc.).
+  - `(auth)` for the login gateway.
+  - `(admin)` for the admin interface.
+- Data access is via **Prisma** (`src/server/db.ts`, `prisma/schema.prisma`) against PostgreSQL.
+- **tRPC** is the single backend API surface:
+  - Server router at `src/server/api/*` and `src/app/api/trpc/[trpc]/route.ts`.
+  - Shared tRPC clients:
+    - React/Query-based client in `src/trpc/react.tsx`.
+    - Generic proxy client in `src/trpc/client.ts` (used by React Admin dataProvider and authProvider).
+- Authentication is handled by **Better Auth**:
+  - Configured in `src/server/auth/better-auth.ts` with the Prisma adapter.
+  - Uses **magic-link** as the only login mechanism (email-based, one-time link).
+  - Uses **multi-session** plugin to allow multiple active sessions per user.
+  - Session lifetime is ~30 minutes (`expiresIn` and `updateAge` set to 30 minutes).
+  - tRPC `protectedProcedure` relies on Better Auth sessions via `createTRPCContext`.
+- Admin UI is built with **React Admin**:
+  - Mounted under `(admin)/applications`.
+  - Uses a tRPC-backed `dataProvider` (`src/admin/dataProvider/trpcDataProvider.ts`).
+  - Uses a Better Auth + tRPC-based `authProvider` (`src/admin/authProvider.ts`) that:
+    - Logs in via magic link.
+    - Authorizes based on the `ADMIN` role using `trpcClient.auth.me`.
+- Email sending is centralized:
+  - `src/server/nodemailer.ts` defines the shared Nodemailer transporter.
+  - `src/server/mails/send.tsx` builds `SendMailOptions` using React Email templates in `src/components/emails/*`.
+  - Magic-link login emails use the `MagicLinkEmail` component (`src/components/emails/magic-link.tsx`).
+
+## Naming & Coding Conventions
+
+These conventions must be followed for all new or modified code:
+
+- **File names**
+  - Use **kebab-case** for all new files, including components and utilities.
+  - Examples:
+    - `magic-link-email.tsx`
+    - `application-list.tsx`
+    - `admin-auth-provider.ts`
+  - Existing non–kebab-case files should be left as-is unless explicitly refactoring for naming consistency.
+
+- **Variables, functions, and components**
+  - Use **camelCase** for:
+    - Variables.
+    - Functions (including React components).
+  - Even though React commonly uses PascalCase for components, this project standardizes on camelCase for all identifiers.
+  - Examples:
+    - `const latestApplications = ...`
+    - `function applicationList(props) { ... }`
+    - `export const adminAuthProvider = { ... }`
+
+- **Imports & paths**
+  - Prefer path aliases defined in `tsconfig.json`:
+    - `@app/*` for `src/*`.
+    - `@gen/*` for generated code in `gen/*`.
+  - Reuse existing helper modules instead of creating new variants:
+    - Use `src/trpc/client.ts` for non-hook tRPC calls (e.g., React Admin).
+    - Use `src/trpc/react.tsx` for hook-based access in React components.
+
+## Auth & Security Principles
+
+- No Keycloak or NextAuth usage remains in the codebase; all auth must go through Better Auth.
+- All privileged operations (admin actions, mail sending, etc.) must:
+  - Use tRPC `protectedProcedure`.
+  - Check for appropriate roles (e.g., `ADMIN`) where relevant.
+- Magic-link login:
+  - Is the primary login mechanism for both applicants and admins.
+  - Must send real emails using the shared Nodemailer transporter, via the helper in `src/server/mails/send.tsx`.
+
+## React Admin Usage
+
+- React Admin must:
+  - Use the tRPC-based `dataProvider` for all backend access (no raw REST calls).
+  - Use the Better Auth–backed `authProvider` for authorization.
+- New resources (e.g., future admin entities) should:
+  - Add React Admin resource components in `src/admin/resources/*` (kebab-case filenames).
+  - Add corresponding tRPC procedures in `src/server/api/routers/*` and wire them to the shared `dataProvider`.
+
+## Form Handling Principles
+
+- The legacy Formik-based forms are being phased out.
+- For new forms:
+  - Prefer non-Formik solutions (e.g., simple controlled components + Zod, or react-hook-form if introduced explicitly).
+  - Keep validation logic in Zod schemas where possible.
+
+## When Editing This Repo
+
+- Respect the existing architecture and routes; avoid introducing parallel stacks (e.g., no additional REST backends).
+- Prefer small, focused changes aligned with this document.
+- Before using a new library or pattern, verify it fits with:
+  - Better Auth for auth.
+  - tRPC for backend calls.
+  - Prisma for data access.
+

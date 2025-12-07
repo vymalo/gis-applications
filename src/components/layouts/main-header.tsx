@@ -1,12 +1,15 @@
 import { LoginToKeepTrack } from '@app/components/login-to-keep-track';
 import { Logout } from '@app/components/logout';
 import { ThemeToggle } from '@app/components/theme';
-import { auth } from '@app/server/auth';
+import { auth } from '@app/server/auth/better-auth';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { ArrowRight } from 'react-feather';
 
 export async function MainHeader() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return (
     <header>
       <div className='container mx-auto my-4 max-w-xl px-4'>

@@ -1,4 +1,5 @@
 import { applicationRouter } from '@app/server/api/routers/application';
+import { authRouter } from '@app/server/api/routers/auth';
 import { createCallerFactory, createTRPCRouter } from '@app/server/api/trpc';
 import { mailRouter } from './routers/mail';
 import { uploadRouter } from './routers/upload';
@@ -10,6 +11,7 @@ import { uploadRouter } from './routers/upload';
  */
 export const appRouter = createTRPCRouter({
   application: applicationRouter,
+  auth: authRouter,
   upload: uploadRouter,
   mail: mailRouter,
 });

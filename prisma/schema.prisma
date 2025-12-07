@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearchPostgres"]
+  provider = "prisma-client-js"
+  // previewFeatures = ["fullTextSearchPostgres"]
 }
 
 generator zod {
@@ -11,10 +11,10 @@ generator zod {
   output   = "../gen/zod"
 }
 
-/// Always after the prisma-client-js generator
-generator json {
-  provider = "prisma-json-types-generator"
-}
+// /// Always after the prisma-client-js generator
+// generator json {
+//   provider = "prisma-json-types-generator"
+// }
 
 datasource db {
   provider = "postgresql"

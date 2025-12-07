@@ -5,7 +5,7 @@ import {
   getSendOnsiteInterviewOptions,
   getSendPhoneInterviewOptions,
 } from '@app/server/mails/send';
-import { ApplicationStatus } from '@prisma/client';
+import { Application, ApplicationStatus } from '@prisma/client';
 import { z } from 'zod';
 
 export const mailRouter = createTRPCRouter({
@@ -18,7 +18,7 @@ export const mailRouter = createTRPCRouter({
         },
       });
 
-      const batch = applications.map(async (application) => {
+      const batch = applications.map(async (application: Application) => {
         try {
           const meta = application.meta ?? {};
           if (meta.status?.invited?.[ApplicationStatus.PHONE_INTERVIEW_PHASE]) {
@@ -57,7 +57,7 @@ export const mailRouter = createTRPCRouter({
         },
       });
 
-      const batch = applications.map(async (application) => {
+      const batch = applications.map(async (application: Application) => {
         try {
           const meta = application.meta ?? {};
           if (
@@ -98,7 +98,7 @@ export const mailRouter = createTRPCRouter({
         },
       });
 
-      const batch = applications.map(async (application) => {
+      const batch = applications.map(async (application: Application) => {
         try {
           const meta = application.meta ?? {};
           if (meta.status?.invited?.[ApplicationStatus.ACCEPTED]) {
@@ -137,7 +137,7 @@ export const mailRouter = createTRPCRouter({
         },
       });
 
-      const batch = applications.map(async (application) => {
+      const batch = applications.map(async (application: Application) => {
         try {
           const meta = application.meta ?? {};
           if (meta.status?.invited?.[ApplicationStatus.REJECTED]) {

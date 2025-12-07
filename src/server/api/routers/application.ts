@@ -28,10 +28,9 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const sessionUser: any = ctx.session.user;
       const userId =
-        ctx.session.user.role === UserRole.ADMIN
-          ? undefined
-          : ctx.session.user.id;
+        sessionUser?.role === UserRole.ADMIN ? undefined : sessionUser?.id;
 
       const application = await ctx.db.application.findUnique({
         where: {

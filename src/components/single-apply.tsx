@@ -14,7 +14,6 @@ import {
 import { api } from '@app/trpc/react';
 import { type Application } from '@prisma/client';
 import { FieldArray, Form, Formik } from 'formik';
-import type { User } from 'next-auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Minus, Plus } from 'react-feather';
@@ -85,7 +84,7 @@ export type SingleApplyProps =
 export function SingleApply({
   application = null,
   user = undefined,
-}: SingleApplyProps & { user?: User }) {
+}: SingleApplyProps & { user?: { email?: string | null } }) {
   const { mutateAsync } = api.application.save.useMutation();
   const router = useRouter();
 

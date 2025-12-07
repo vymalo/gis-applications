@@ -1,31 +1,9 @@
-import withBundleAnalyzer from '@next/bundle-analyzer';
-import type { NextConfig } from 'next';
 import withPlugins from 'next-compose-plugins';
+import type { NextConfig } from 'next';
 
-import './src/env.js';
+import { env } from '@app/env';
 
-const isDev = process.env.NODE_ENV !== 'production';
-
-const shouldCache = (nextConfig: NextConfig): NextConfig => {
-  if (isDev) {
-    return nextConfig;
-  }
-  return {
-    ...nextConfig,
-    cacheHandler: require.resolve('./cache-handler.mjs'),
-  };
-};
-
-const shouldPwa = (nextConfig: NextConfig): NextConfig => {
-  if (!isDev) {
-    const withPWA = require('@ducanh2912/next-pwa').default({
-      dest: 'public',
-    });
-    return withPWA(nextConfig);
-  }
-
-  return nextConfig;
-};
+const isDev = env.NODE_ENV !== 'production';
 
 const withImageSizes = (nextConfig: NextConfig): NextConfig => {
   if (isDev) {
@@ -50,7 +28,7 @@ const withImageSizes = (nextConfig: NextConfig): NextConfig => {
         ...(nextConfig?.images?.remotePatterns ?? []),
         {
           protocol: 'https',
-          hostname: '*.adorsys.team',
+          hostname: '*.vymalo.com',
         },
         {
           protocol: 'https',
@@ -62,9 +40,6 @@ const withImageSizes = (nextConfig: NextConfig): NextConfig => {
 };
 
 const withWebpack = (nextConfig: NextConfig): NextConfig => {
-  if (isDev) {
-    return nextConfig;
-  }
   return {
     ...nextConfig,
     webpack: (config, context) => {
@@ -84,15 +59,6 @@ const nextConfig: NextConfig = {
 export default withPlugins(
   [
     [withImageSizes],
-    [withWebpack],
-    [
-      withBundleAnalyzer({
-        enabled: !isDev,
-        openAnalyzer: isDev,
-      }),
-    ],
-    [shouldPwa],
-    [shouldCache],
   ],
   nextConfig,
 );

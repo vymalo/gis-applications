@@ -1,8 +1,9 @@
 import { SingleApply } from '@app/components/single-apply';
 import { env } from '@app/env';
-import { auth } from '@app/server/auth';
+import { auth } from '@app/server/auth/better-auth';
 import { api, HydrateClient } from '@app/trpc/server';
 import moment from 'moment';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 export default async function ApplicationAgain({
@@ -14,7 +15,9 @@ export default async function ApplicationAgain({
     return null;
   }
 
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   const { application_id } = await params;
   const application = await api.application
     .getApplication({
