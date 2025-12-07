@@ -12,6 +12,10 @@ Any future automated changes (by tools or agents) must respect these rules.
   - `(admin)` for the admin interface.
 - Data access is via **Drizzle ORM** (`src/server/db.ts`, `src/server/db/schema.ts`) against PostgreSQL with migrations driven by `drizzle.config.ts` and the `drizzle/` directory.
 - Application data and metadata shapes live in `src/types/application-data.ts`; prefer these shared `ApplicationData`, `ApplicationMeta`, and `NormalizedApplication` aliases whenever you read or write applicant records so the loose JSON payloads remain typed.
+- Application rows now store data and meta in dedicated columns (no JSON `data`/`meta` fields):
+  - Data columns: `first_name`, `last_name`, `birth_date`, `who_are_you`, `phone_numbers`, `country`, `city`, `where_are_you`, `has_id_cart_or_passport`, `id_cart_or_passport_or_receipt`, `high_school_over`, `high_school_gce_ol_probatoir_date`, `high_school_gce_ol_probatoire_certificates`, `high_school_gce_al_bac_date`, `high_school_gce_al_bac_certificates`, `university_student`, `university_start_date`, `university_end_date`, `university_certificates`.
+  - Meta columns: `meta_invited_statuses`, `meta_document_statuses`, `meta_document_comments`.
+  - Always convert between DB rows and typed shapes via `src/server/application-normalizer.ts` (`buildApplicationData`, `buildApplicationMeta`, `mapApplicationDataToColumns`); do not reintroduce JSON blobs.
 - **tRPC** is the single backend API surface:
   - Server router at `src/server/api/*` and `src/app/api/trpc/[trpc]/route.ts`.
   - Shared tRPC clients:
@@ -97,3 +101,8 @@ These conventions must be followed for all new or modified code:
   - Better Auth for auth.
   - tRPC for backend calls.
   - Drizzle for data access.
+
+## Database & Migrations
+
+- Drizzle migrations live in `drizzle/`; the current migration splitting application JSON fields is `drizzle/0000_expand_application_fields.sql` with journal tracking under `drizzle/meta/_journal.json`.
+- Migrations runner container is defined at `companions/migrations/Dockerfile` and `companions/migrations/entrypoint.sh`; it uses `yarn drizzle-kit migrate` (no Prisma) and requires `DATABASE_URL` at runtime. Build with `docker build -f companions/migrations/Dockerfile -t gis-migrations .` and run with `docker run --rm -e DATABASE_URL=... gis-migrations`.

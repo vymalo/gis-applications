@@ -1,25 +1,4 @@
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.1.2
-    restart: unless-stopped
-    ports:
-      - '9100:9100'
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: password
-      KC_HTTP_PORT: 9100
-      KC_LOG_CONSOLE_COLOR: 'true'
-    entrypoint: /bin/sh
-    command:
-      - -c
-      - |
-        set -ex
-        /opt/keycloak/bin/kc.sh build
-        /opt/keycloak/bin/kc.sh start-dev --import-realm
-
-    volumes:
-      - ./.docker/keycloak-config/:/opt/keycloak/data/import/:ro
-
   postgres:
     image: postgres
     environment:
@@ -85,12 +64,10 @@ services:
       REDIS_URL: "redis://redis:6379"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tracking:4318"
       S3_ENDPOINT: minio
-      AUTH_KEYCLOAK_ISSUER: http://host.docker.internal:9100/realms/adorsys-tm-01
     depends_on:
       - redis
       - postgres
       - adminer
-      - keycloak
       - migrations
       - minio
   

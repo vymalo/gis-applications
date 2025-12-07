@@ -29,9 +29,6 @@ export const user = pgTable('user', {
     banExpires: timestamp('ban_expires'),
     role: UserRoleEnum('role').default('USER').notNull(),
   },
-  (table) => ({
-    emailUnique: uniqueIndex('user_email_unique').on(table.email),
-  }),
 );
 
 export const applications = pgTable(
