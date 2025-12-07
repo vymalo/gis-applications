@@ -125,7 +125,7 @@ export interface ApplicationData {
   lastName: string;
   birthDate: string | Date;
   whoAreYou?: string;
-  phoneNumbers: ApplicationPhoneNumber[];
+  phoneNumbers?: ApplicationPhoneNumber[];
   country: string;
   city: string;
   whereAreYou?: string;

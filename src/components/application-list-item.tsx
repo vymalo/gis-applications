@@ -26,12 +26,14 @@ export function ApplicationListItem(application: NormalizedApplication) {
         <div className='text-xs'>{moment(createdAt).format(DATE_FORMAT)}</div>
       </div>
       <div className='flex flex-row gap-2 items-center'>
-        {data.phoneNumbers.map(
+        {(data.phoneNumbers ?? []).map(
           ({ phoneNumber, whatsappCall, normalCall }) => (
             <Fragment key={phoneNumber}>
               {normalCall && <PhoneTelButton phoneNumber={phoneNumber} />}
 
-              {whatsappCall && <OpenWhatsappButton phoneNumber={phoneNumber} />}
+              {whatsappCall && (
+                <OpenWhatsappButton phoneNumber={phoneNumber} />
+              )}
             </Fragment>
           ),
         )}

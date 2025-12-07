@@ -43,36 +43,9 @@ export const buildApplicationData = (
   lastName: application.lastName,
   birthDate: application.birthDate,
   whoAreYou: application.whoAreYou ?? undefined,
-  phoneNumbers: normalizeArray<ApplicationPhoneNumber>(
-    application.phoneNumbers as ApplicationPhoneNumber[],
-  ),
   country: application.country,
   city: application.city,
   whereAreYou: application.whereAreYou ?? undefined,
-  hasIDCartOrPassport: application.hasIdCartOrPassport ?? false,
-  iDCartOrPassportOrReceipt: normalizeArray<ApplicationDocument>(
-    application.idCartOrPassportOrReceipt as ApplicationDocument[],
-  ),
-  highSchoolOver: application.highSchoolOver ?? false,
-  highSchoolGceOLProbatoirDate: normalizeDate(
-    application.highSchoolGceOLProbatoirDate,
-  ) ?? undefined,
-  highSchoolGceOLProbatoireCertificates:
-    normalizeArray<ApplicationDocument>(
-      application.highSchoolGceOLProbatoireCertificates as ApplicationDocument[],
-    ),
-  highSchoolGceALBACDate:
-    normalizeDate(application.highSchoolGceALBACDate) ?? undefined,
-  highSchoolGceALBACCertificates: normalizeArray<ApplicationDocument>(
-    application.highSchoolGceALBACCertificates as ApplicationDocument[],
-  ),
-  universityStudent: application.universityStudent ?? false,
-  universityStartDate:
-    normalizeDate(application.universityStartDate) ?? undefined,
-  universityEndDate: normalizeDate(application.universityEndDate) ?? undefined,
-  universityCertificates: normalizeArray<ApplicationDocument>(
-    application.universityCertificates as ApplicationDocument[],
-  ),
 });
 
 export const buildApplicationMeta = (
@@ -95,33 +68,8 @@ export const mapApplicationDataToColumns = (data: ApplicationData) => {
     lastName: data.lastName,
     birthDate,
     whoAreYou: data.whoAreYou ?? null,
-    phoneNumbers: normalizeArray<ApplicationPhoneNumber>(
-      data.phoneNumbers as ApplicationPhoneNumber[],
-    ),
     country: data.country,
     city: data.city,
     whereAreYou: data.whereAreYou ?? null,
-    hasIdCartOrPassport: data.hasIDCartOrPassport ?? false,
-    idCartOrPassportOrReceipt: normalizeArray<ApplicationDocument>(
-      data.iDCartOrPassportOrReceipt as ApplicationDocument[],
-    ),
-    highSchoolOver: data.highSchoolOver ?? false,
-    highSchoolGceOLProbatoirDate:
-      toDateString(data.highSchoolGceOLProbatoirDate),
-    highSchoolGceOLProbatoireCertificates:
-      normalizeArray<ApplicationDocument>(
-        data.highSchoolGceOLProbatoireCertificates as ApplicationDocument[],
-      ),
-    highSchoolGceALBACDate:
-      toDateString(data.highSchoolGceALBACDate),
-    highSchoolGceALBACCertificates: normalizeArray<ApplicationDocument>(
-      data.highSchoolGceALBACCertificates as ApplicationDocument[],
-    ),
-    universityStudent: data.universityStudent ?? false,
-    universityStartDate: toDateString(data.universityStartDate),
-    universityEndDate: toDateString(data.universityEndDate),
-    universityCertificates: normalizeArray<ApplicationDocument>(
-      data.universityCertificates as ApplicationDocument[],
-    ),
   };
 };

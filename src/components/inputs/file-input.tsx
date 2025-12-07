@@ -2,7 +2,7 @@ import { useUploadFile } from '@app/hooks/upload-file';
 import { useField } from 'formik';
 import React, { useCallback, useId } from 'react';
 
-import Image from 'next/image';
+import { SignedImage } from '@app/components/signed-image';
 import { Upload, X } from 'react-feather';
 import { useImperativeFilePicker } from 'use-file-picker';
 import {
@@ -88,11 +88,11 @@ export function FileInputComponent({
               key={index}>
               <div className='text-primary'>
                 <div className='avatar'>
-                  <div className='w-12 rounded-full relative'>
-                    <Image
+                  <div className='w-12 h-12 rounded-full relative overflow-hidden'>
+                    <SignedImage
                       fill
                       className='object-contain'
-                      src={file.publicUrl}
+                      publicUrl={file.publicUrl}
                       alt={file.name}
                     />
                   </div>

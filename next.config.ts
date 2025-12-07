@@ -59,6 +59,7 @@ const nextConfig: NextConfig = {
 export default withPlugins(
   [
     [withImageSizes],
+    [withWebpack],
   ],
   nextConfig,
 );

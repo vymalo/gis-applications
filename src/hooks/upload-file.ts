@@ -12,7 +12,11 @@ export function useUploadFile() {
     mutationFn: async ({ url, file }: { file: File; url: string }) => {
       await getApiClient().put<MinioUploadRequest, MinioUploadResponse>(
         url,
-        file,
+        file, {
+          headers: {
+            'Content-Type': file.type
+          }
+        }
       );
     },
   });

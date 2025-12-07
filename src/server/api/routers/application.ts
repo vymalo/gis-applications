@@ -164,19 +164,7 @@ const applyPhonesToData = (
     return { data, phoneDtos: [] };
   }
   const phoneDtos = phones.map(toPhoneDto);
-  return {
-    data: {
-      ...data,
-      phoneNumbers: phoneDtos.map(
-        ({ phoneNumber, whatsappCall, normalCall }) => ({
-          phoneNumber,
-          whatsappCall,
-          normalCall,
-        }),
-      ),
-    },
-    phoneDtos,
-  };
+  return { data, phoneDtos };
 };
 
 const applyDocumentsToData = (
@@ -189,43 +177,8 @@ const applyDocumentsToData = (
 
   const storedDocuments = docs.map(toStoredDocument);
 
-  const toSimpleDocs = (items: ApplicationStoredDocument[]) =>
-    items.map(({ name, publicUrl }) => ({
-      name,
-      publicUrl,
-    }));
-
-  const idDocs = storedDocuments.filter((doc) => doc.kind === 'ID');
-  const olDocs = storedDocuments.filter(
-    (doc) => doc.kind === 'GCE_OL_CERT' || doc.kind === 'PROBATOIRE_CERT',
-  );
-  const alDocs = storedDocuments.filter(
-    (doc) => doc.kind === 'GCE_AL_CERT' || doc.kind === 'BAC_CERT',
-  );
-  const uniDocs = storedDocuments.filter(
-    (doc) => doc.kind === 'UNIVERSITY_CERT',
-  );
-
   return {
-    data: {
-      ...data,
-      iDCartOrPassportOrReceipt:
-        idDocs.length > 0
-          ? toSimpleDocs(idDocs)
-          : data.iDCartOrPassportOrReceipt,
-      highSchoolGceOLProbatoireCertificates:
-        olDocs.length > 0
-          ? toSimpleDocs(olDocs)
-          : data.highSchoolGceOLProbatoireCertificates,
-      highSchoolGceALBACCertificates:
-        alDocs.length > 0
-          ? toSimpleDocs(alDocs)
-          : data.highSchoolGceALBACCertificates,
-      universityCertificates:
-        uniDocs.length > 0
-          ? toSimpleDocs(uniDocs)
-          : data.universityCertificates,
-    },
+    data,
     storedDocuments,
   };
 };
@@ -410,11 +363,9 @@ const derivePhones = (
   phones: unknown[] | undefined,
   data: ApplicationData,
 ): ApplicationPhoneInsert[] => {
-  const provided = (phones as ApplicationPhoneDto[] | undefined) ?? [];
   const base =
-    provided.length > 0
-      ? provided
-      : normalizeArray(data.phoneNumbers ?? []);
+    (phones as ApplicationPhoneDto[] | undefined) ??
+    normalizeArray(data.phoneNumbers ?? []);
 
   return base
     .filter((phone) => phone.phoneNumber?.length)
@@ -438,34 +389,8 @@ const deriveDocuments = (
   data: ApplicationData,
 ): ApplicationDocumentInsert[] => {
   const provided = (documents as ApplicationStoredDocument[] | undefined) ?? [];
-  const derived: ApplicationStoredDocument[] = [...provided];
 
-  const pushDocs = (
-    items: ApplicationDocumentDto[] = [],
-    kind: ApplicationDocument['kind'],
-  ) => {
-    items.forEach((doc) => {
-      derived.push({
-        kind,
-        name: doc.name ?? doc.publicUrl,
-        publicUrl: doc.publicUrl,
-        status: 'pending',
-      });
-    });
-  };
-
-  pushDocs(data.iDCartOrPassportOrReceipt ?? [], 'ID');
-  pushDocs(
-    data.highSchoolGceOLProbatoireCertificates ?? [],
-    'GCE_OL_CERT',
-  );
-  pushDocs(
-    data.highSchoolGceALBACCertificates ?? [],
-    'GCE_AL_CERT',
-  );
-  pushDocs(data.universityCertificates ?? [], 'UNIVERSITY_CERT');
-
-  return derived.map((doc) => ({
+  return provided.map((doc) => ({
     applicationId: '',
     id: createId(),
     educationId: doc.educationId ?? null,

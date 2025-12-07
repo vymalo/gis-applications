@@ -108,7 +108,7 @@ export function AdminSingleApplication({
         <div className='col-span-1 opacity-50'>Whatsapp</div>
         <div className='col-span-1 opacity-50'>Normal calls</div>
 
-        {data.phoneNumbers.map(
+        {(data.phoneNumbers ?? []).map(
           ({ phoneNumber, whatsappCall, normalCall }: any) => (
             <Fragment key={phoneNumber}>
               <div className='col-span-2 flex flex-row items-center gap-2'>

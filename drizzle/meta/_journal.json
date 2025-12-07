@@ -8,6 +8,13 @@
       "when": 1765076618959,
       "tag": "0000_redundant_omega_red",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "9",
+      "when": 1765081234000,
+      "tag": "0002_simplify_application",
+      "breakpoints": true
     }
   ]
 }

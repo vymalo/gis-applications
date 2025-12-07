@@ -4,7 +4,7 @@ import { auth } from '@app/server/auth/better-auth';
 import { api, HydrateClient } from '@app/trpc/server';
 import moment from 'moment';
 import { headers } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export default async function ApplicationAgain({
   params,
@@ -18,6 +18,11 @@ export default async function ApplicationAgain({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+
+  if (!session?.user) {
+    redirect('/login');
+  }
+
   const { application_id } = await params;
   const application = await api.application
     .getApplication({
