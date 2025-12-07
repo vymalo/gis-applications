@@ -1,12 +1,4 @@
-import {
-  and,
-  eq,
-  ilike,
-  inArray, 
-  not,
-  or,
-  sql,
-} from 'drizzle-orm';
+import { and, eq, inArray, not, or, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { createId } from '@paralleldrive/cuid2';
 import {
@@ -23,295 +15,20 @@ import {
   applicationProgramChoices,
   applicationStatusHistory,
   user,
-  type Application,
-  type ApplicationConsent,
-  type ApplicationConsentInsert,
-  type ApplicationDocument,
-  type ApplicationDocumentInsert,
-  type ApplicationEducation as ApplicationEducationRow,
-  type ApplicationEducationInsert,
-  type ApplicationPhone as ApplicationPhoneRow,
-  type ApplicationPhoneInsert,
-  type ApplicationProgramChoice,
-  type ApplicationProgramChoiceInsert,
-  type ApplicationStatusHistory,
-  type User, ApplicationStatusEnum,
 } from '@app/server/db/schema';
+import { mapApplicationDataToColumns } from '@app/server/application-normalizer';
 import {
-  buildApplicationData,
-  buildApplicationMeta,
-  mapApplicationDataToColumns,
-} from '@app/server/application-normalizer';
+  applicationService,
+  editableStatusesForApplicant,
+} from '@app/server/services/application-service';
 import { getDocumentKey } from '@app/server/constants';
 import {
   ApplicationStatus,
   ApplicationStatusSchema,
 } from '@app/types/application-status';
-import type {
-  ApplicationData,
-  ApplicationEducationStatus,
-  ApplicationEducationType,
-  ApplicationDocument as ApplicationDocumentDto,
-  ApplicationPhoneKind,
-  ApplicationEducation as ApplicationEducationDto,
-  ApplicationProgramChoice as ApplicationProgramChoiceDto,
-  ApplicationPhone as ApplicationPhoneDto,
-  ApplicationConsent as ApplicationConsentDto,
-  ApplicationStoredDocument,
-  NormalizedApplication,
-} from '@app/types/application-data';
+import type { ApplicationData } from '@app/types/application-data';
 import * as _ from 'lodash';
 import { z } from 'zod';
-import {
-  normalizeArray,
-  toDateString,
-} from '@app/server/application-normalizer';
-
-type ApplicationRelations = {
-  programChoices: Record<string, ApplicationProgramChoice[]>;
-  educations: Record<string, ApplicationEducationRow[]>;
-  documents: Record<string, ApplicationDocument[]>;
-  phones: Record<string, ApplicationPhoneRow[]>;
-  consents: Record<string, ApplicationConsent[]>;
-  statusHistory: Record<string, ApplicationStatusHistory[]>;
-};
-
-const editableStatusesForApplicant: ApplicationStatus[] = [
-  ApplicationStatus.DRAFT,
-  ApplicationStatus.NEED_APPLICANT_INTERVENTION,
-];
-
-const groupByApplicationId = <T extends { applicationId: string }>(
-  items: T[],
-): Record<string, T[]> => {
-  return items.reduce<Record<string, T[]>>((acc, item) => {
-    const list = acc[item.applicationId] ?? [];
-    list.push(item);
-    acc[item.applicationId] = list;
-    return acc;
-  }, {});
-};
-
-const toStoredDocument = (
-  doc: ApplicationDocument,
-): ApplicationStoredDocument => ({
-  id: doc.id,
-  applicationId: doc.applicationId,
-  educationId: doc.educationId ?? undefined,
-  kind: doc.kind,
-  name: doc.name,
-  publicUrl: doc.publicUrl,
-  status: doc.status,
-  reviewerComment: doc.reviewerComment ?? null,
-});
-
-const toPhoneDto = (phone: ApplicationPhoneRow) => ({
-  id: phone.id,
-  phoneNumber: phone.phoneNumber,
-  whatsappCall: phone.whatsappCall ?? false,
-  normalCall: phone.normalCall ?? false,
-  kind: phone.kind as ApplicationPhoneKind,
-});
-
-const toProgramChoiceDto = (
-  choice: ApplicationProgramChoice,
-): ApplicationProgramChoiceDto => ({
-  id: choice.id,
-  rank: choice.rank ?? undefined,
-  programCode: choice.programCode,
-  campus: choice.campus ?? undefined,
-  startTerm: choice.startTerm ?? undefined,
-  studyMode: choice.studyMode ?? undefined,
-  fundingType: choice.fundingType ?? undefined,
-});
-
-const toEducationDto = (edu: ApplicationEducationRow) => ({
-  id: edu.id,
-  type: edu.type as ApplicationEducationType,
-  schoolName: edu.schoolName,
-  city: edu.city ?? undefined,
-  country: edu.country ?? undefined,
-  fieldOfStudy: edu.fieldOfStudy ?? undefined,
-  startDate: edu.startDate ?? undefined,
-  endDate: edu.endDate ?? undefined,
-  completionDate: edu.completionDate ?? undefined,
-  status: edu.status as ApplicationEducationStatus | undefined,
-  gpa: edu.gpa ?? undefined,
-  candidateNumber: edu.candidateNumber ?? undefined,
-  sessionYear: edu.sessionYear ?? undefined,
-});
-
-const toConsentDto = (consent: ApplicationConsent) => ({
-  id: consent.id,
-  consentType: consent.consentType,
-  value: consent.value,
-  grantedAt: consent.grantedAt ?? undefined,
-  version: consent.version ?? undefined,
-});
-
-const toStatusHistoryDto = (entry: ApplicationStatusHistory) => ({
-  id: entry.id,
-  status: entry.status as ApplicationStatus,
-  changedAt: entry.changedAt ?? undefined,
-  changedById: entry.changedById ?? undefined,
-  note: entry.note ?? undefined,
-});
-
-const applyPhonesToData = (
-  data: ApplicationData,
-  phones: ApplicationPhoneRow[],
-) => {
-  if (!phones.length) {
-    return { data, phoneDtos: [] };
-  }
-  const phoneDtos = phones.map(toPhoneDto);
-  return { data, phoneDtos };
-};
-
-const applyDocumentsToData = (
-  data: ApplicationData,
-  docs: ApplicationDocument[],
-) => {
-  if (!docs.length) {
-    return { data, storedDocuments: [] as ApplicationStoredDocument[] };
-  }
-
-  const storedDocuments = docs.map(toStoredDocument);
-
-  return {
-    data,
-    storedDocuments,
-  };
-};
-
-const loadApplicationRelations = async (
-  db: typeof import('@app/server/db').db,
-  applicationIds: string[],
-): Promise<ApplicationRelations> => {
-  if (!applicationIds.length) {
-    return {
-      programChoices: {},
-      educations: {},
-      documents: {},
-      phones: {},
-      consents: {},
-      statusHistory: {},
-    };
-  }
-
-  const [
-    programChoices,
-    educations,
-    documents,
-    phones,
-    consents,
-    statusHistory,
-  ] = await Promise.all([
-    db
-      .select()
-      .from(applicationProgramChoices)
-      .where(inArray(applicationProgramChoices.applicationId, applicationIds)),
-    db
-      .select()
-      .from(applicationEducations)
-      .where(inArray(applicationEducations.applicationId, applicationIds)),
-    db
-      .select()
-      .from(applicationDocuments)
-      .where(inArray(applicationDocuments.applicationId, applicationIds)),
-    db
-      .select()
-      .from(applicationPhones)
-      .where(inArray(applicationPhones.applicationId, applicationIds)),
-    db
-      .select()
-      .from(applicationConsents)
-      .where(inArray(applicationConsents.applicationId, applicationIds)),
-    db
-      .select()
-      .from(applicationStatusHistory)
-      .where(inArray(applicationStatusHistory.applicationId, applicationIds)),
-  ]);
-
-  return {
-    programChoices: groupByApplicationId(programChoices),
-    educations: groupByApplicationId(educations),
-    documents: groupByApplicationId(documents),
-    phones: groupByApplicationId(phones),
-    consents: groupByApplicationId(consents),
-    statusHistory: groupByApplicationId(statusHistory),
-  };
-};
-
-const normalizeApplication = (
-  row: {
-    application: Application;
-    createdBy: User | null;
-  },
-  relations?: ApplicationRelations,
-): NormalizedApplication => {
-  const {
-    metaInvitedStatuses,
-    metaDocumentStatuses,
-    metaDocumentComments,
-    ...application
-  } = row.application;
-
-  const status =
-    application.status ?? ApplicationStatus.DRAFT;
-
-  const relationSet = relations
-    ? {
-        programChoices:
-          relations.programChoices[application.id] ?? [],
-        educations: relations.educations[application.id] ?? [],
-        documents: relations.documents[application.id] ?? [],
-        phones: relations.phones[application.id] ?? [],
-        consents: relations.consents[application.id] ?? [],
-        statusHistory:
-          relations.statusHistory[application.id] ?? [],
-      }
-    : {
-        programChoices: [],
-        educations: [],
-        documents: [],
-        phones: [],
-        consents: [],
-        statusHistory: [],
-      };
-
-  const baseData = buildApplicationData(row.application);
-  const { data: withPhones, phoneDtos } = applyPhonesToData(
-    baseData,
-    relationSet.phones,
-  );
-  const { data: withDocuments, storedDocuments } =
-    applyDocumentsToData(withPhones, relationSet.documents);
-
-  return {
-    ...application,
-    createdBy: row.createdBy ?? null,
-    data: withDocuments,
-    meta: buildApplicationMeta(row.application),
-    status: status as ApplicationStatus,
-    programChoices: relationSet.programChoices.map(toProgramChoiceDto),
-    educations: relationSet.educations.map(toEducationDto),
-    documents: storedDocuments,
-    phones: phoneDtos,
-    consents: relationSet.consents.map(toConsentDto),
-    statusHistory: relationSet.statusHistory.map(toStatusHistoryDto),
-  };
-};
-
-const buildSearchConditions = (query: string) => {
-  const fields = [
-    applications.lastName,
-    applications.firstName,
-    applications.whoAreYou,
-    applications.whereAreYou,
-  ];
-  return fields.map((field) => ilike(field, `%${query}%`));
-};
 
 const SaveInputSchema = z.object({
   data: z.object({}).passthrough(),
@@ -325,118 +42,11 @@ const SaveInputSchema = z.object({
   consents: z.array(z.object({}).passthrough()).optional(),
 });
 
-const deriveProgramChoices = (
-  choices: unknown[] | undefined,
-): ApplicationProgramChoiceInsert[] =>
-  (choices as ApplicationProgramChoiceDto[] | undefined)?.map(
-    (choice) => ({
-      applicationId: '',
-      id: createId(),
-      rank: choice.rank ?? 1,
-      programCode: choice.programCode,
-      campus: choice.campus ?? null,
-      startTerm: choice.startTerm ?? null,
-      studyMode: choice.studyMode ?? null,
-      fundingType: choice.fundingType ?? null,
-    }),
-  ) ?? [];
-
-const deriveEducations = (
-  educations: unknown[] | undefined,
-): ApplicationEducationInsert[] =>
-  (educations as ApplicationEducationDto[] | undefined)?.map((education) => ({
-    applicationId: '',
-    id: createId(),
-    type: education.type,
-    schoolName: education.schoolName,
-    city: education.city ?? null,
-    country: education.country ?? null,
-    fieldOfStudy: education.fieldOfStudy ?? null,
-    startDate: toDateString(education.startDate) ?? null,
-    endDate: toDateString(education.endDate) ?? null,
-    completionDate: toDateString(education.completionDate) ?? null,
-    status: (education.status as ApplicationEducationStatus | null) ?? 'IN_PROGRESS',
-    gpa: education.gpa ?? null,
-    candidateNumber: education.candidateNumber ?? null,
-    sessionYear: education.sessionYear ?? null,
-  })) ?? [];
-
-const derivePhones = (
-  phones: unknown[] | undefined,
-  data: ApplicationData,
-): ApplicationPhoneInsert[] => {
-  const base =
-    (phones as ApplicationPhoneDto[] | undefined) ??
-    normalizeArray(data.phoneNumbers ?? []);
-
-  return base
-    .filter((phone) => phone.phoneNumber?.length)
-    .map((phone) => {
-      const phoneWithKind = phone as ApplicationPhoneDto;
-      return {
-        applicationId: '',
-        id: createId(),
-        phoneNumber: phone.phoneNumber,
-        whatsappCall: !!phone.whatsappCall,
-        normalCall: !!phone.normalCall,
-        kind:
-          (phoneWithKind.kind as ApplicationPhoneKind | undefined) ??
-          'PRIMARY',
-      };
-    });
+const assertAdmin = (ctx: { session: { user: { role?: string } } }) => {
+  if (ctx.session.user.role !== 'ADMIN') {
+    throw new TRPCError({ code: 'FORBIDDEN' });
+  }
 };
-
-const deriveDocuments = (
-  documents: unknown[] | undefined,
-): ApplicationDocumentInsert[] => {
-  const provided = (documents as (ApplicationStoredDocument & {
-    files?: { publicUrl: string; name?: string }[];
-  })[] | undefined) ?? [];
-
-  const mapped: (ApplicationDocumentInsert | null)[] = provided.map((doc) => {
-    const kind = doc.kind ?? 'OTHER';
-    const firstFile = doc.files?.[0];
-    const publicUrl = doc.publicUrl || firstFile?.publicUrl || '';
-    if (!publicUrl) {
-      return null;
-    }
-    const fallbackName = firstFile?.name || kind;
-    const name =
-      (doc.name && doc.name.trim().length ? doc.name : fallbackName) ??
-      kind;
-    const educationId =
-      doc.educationId && doc.educationId.trim().length
-        ? doc.educationId
-        : null;
-    return {
-      applicationId: '',
-      id: createId(),
-      educationId,
-      kind,
-      name,
-      publicUrl,
-      status: doc.status ?? 'pending',
-      reviewerComment: doc.reviewerComment ?? null,
-    } satisfies ApplicationDocumentInsert;
-  });
-
-  return mapped.filter(Boolean) as ApplicationDocumentInsert[];
-};
-
-const deriveConsents = (
-  consents: unknown[] | undefined,
-): ApplicationConsentInsert[] =>
-  (consents as ApplicationConsentDto[] | undefined)?.map((consent) => ({
-    applicationId: '',
-    id: createId(),
-    consentType: consent.consentType,
-    value: consent.value,
-    grantedAt:
-      consent.grantedAt != null
-        ? new Date(consent.grantedAt)
-        : undefined,
-    version: consent.version ?? null,
-  })) ?? [];
 
 export const applicationRouter = createTRPCRouter({
   getUserApplication: protectedProcedure.query(async ({ ctx }) => {
@@ -454,13 +64,13 @@ export const applicationRouter = createTRPCRouter({
         ),
       );
 
-    const relations = await loadApplicationRelations(
+    const relations = await applicationService.loadApplicationRelations(
       ctx.db,
       applicationRows.map((row) => row.application.id),
     );
 
     return applicationRows.map((row) =>
-      normalizeApplication(row, relations),
+      applicationService.normalizeApplication(row, relations),
     );
   }),
 
@@ -488,11 +98,12 @@ export const applicationRouter = createTRPCRouter({
       return null;
     }
 
-    const relations = await loadApplicationRelations(ctx.db, [
-      row.application.id,
-    ]);
+    const relations = await applicationService.loadApplicationRelations(
+      ctx.db,
+      [row.application.id],
+    );
 
-    return normalizeApplication(row, relations);
+    return applicationService.normalizeApplication(row, relations);
   }),
 
   getApplication: protectedProcedure
@@ -525,11 +136,12 @@ export const applicationRouter = createTRPCRouter({
         return null;
       }
 
-      const relations = await loadApplicationRelations(ctx.db, [
-        row.application.id,
-      ]);
+      const relations = await applicationService.loadApplicationRelations(
+        ctx.db,
+        [row.application.id],
+      );
 
-      return normalizeApplication(row, relations);
+      return applicationService.normalizeApplication(row, relations);
   }),
 
   save: publicProcedure
@@ -541,14 +153,22 @@ export const applicationRouter = createTRPCRouter({
         input.data as ApplicationData,
       );
 
-      const programChoices = deriveProgramChoices(input.programChoices);
-      const educations = deriveEducations(input.educations);
-      const phones = derivePhones(
+      const programChoices = applicationService.deriveProgramChoices(
+        input.programChoices,
+      );
+      const educations = applicationService.deriveEducations(
+        input.educations,
+      );
+      const phones = applicationService.derivePhones(
         input.phones,
         input.data as ApplicationData,
       );
-      const documents = deriveDocuments(input.documents);
-      const consents = deriveConsents(input.consents);
+      const documents = applicationService.deriveDocuments(
+        input.documents,
+      );
+      const consents = applicationService.deriveConsents(
+        input.consents,
+      );
       const requestedStatus =
         input.status && ApplicationStatusSchema.safeParse(input.status).success
           ? (input.status as ApplicationStatus)
@@ -719,11 +339,12 @@ export const applicationRouter = createTRPCRouter({
         return null;
       }
 
-      const relations = await loadApplicationRelations(ctx.db, [
-        applicationId,
-      ]);
+      const relations = await applicationService.loadApplicationRelations(
+        ctx.db,
+        [applicationId],
+      );
 
-      return normalizeApplication(row, relations);
+      return applicationService.normalizeApplication(row, relations);
     }),
 
   getSome: protectedProcedure
@@ -736,7 +357,10 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { q, size, page, groupBy } }) => {
-      const searchConditions = q ? buildSearchConditions(q) : [];
+      assertAdmin(ctx);
+      const searchConditions = q
+        ? applicationService.buildSearchConditions(q)
+        : [];
 
       const rows = await ctx.db
         .select({
@@ -749,13 +373,13 @@ export const applicationRouter = createTRPCRouter({
         .limit(size)
         .offset(page * size);
 
-      const relations = await loadApplicationRelations(
+      const relations = await applicationService.loadApplicationRelations(
         ctx.db,
         rows.map((row) => row.application.id),
       );
 
       const normalized = rows.map((row) =>
-        normalizeApplication(row, relations),
+        applicationService.normalizeApplication(row, relations),
       );
       const grouped = _.groupBy(normalized, groupBy);
       return _.entries(grouped);
@@ -770,6 +394,7 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { comment, applicationId, publicUrl } }) => {
+      assertAdmin(ctx);
       const [application] = await ctx.db
         .select()
         .from(applications)
@@ -807,6 +432,7 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { applicationId, publicUrl } }) => {
+      assertAdmin(ctx);
       const [application] = await ctx.db
         .select()
         .from(applications)
@@ -828,6 +454,7 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { applicationId, publicUrl, status } }) => {
+      assertAdmin(ctx);
       const [application] = await ctx.db
         .select()
         .from(applications)
@@ -863,6 +490,7 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { applicationId, publicUrl } }) => {
+      assertAdmin(ctx);
       const [application] = await ctx.db
         .select()
         .from(applications)
@@ -883,6 +511,7 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { applicationId, status } }) => {
+      assertAdmin(ctx);
       const [updated] = await ctx.db
         .update(applications)
         .set({

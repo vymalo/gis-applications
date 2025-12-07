@@ -32,8 +32,8 @@ export const auth = betterAuth({
   }),
   session: {
     // 30 minutes in seconds
-    expiresIn: 60 * 60 * 3, // 3h
-    updateAge: 60 * 60 * 7, // 7h
+    expiresIn: 60 * 30,
+    updateAge: 60 * 30,
   },
   plugins: [
     // Primary login for regular users: one-time magic link sent by email.

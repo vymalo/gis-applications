@@ -16,6 +16,7 @@ Any future automated changes (by tools or agents) must respect these rules.
   - Data columns: `first_name`, `last_name`, `birth_date`, `who_are_you`, `phone_numbers`, `country`, `city`, `where_are_you`, `has_id_cart_or_passport`, `id_cart_or_passport_or_receipt`, `high_school_over`, `high_school_gce_ol_probatoir_date`, `high_school_gce_ol_probatoire_certificates`, `high_school_gce_al_bac_date`, `high_school_gce_al_bac_certificates`, `university_student`, `university_start_date`, `university_end_date`, `university_certificates`.
   - Meta columns: `meta_invited_statuses`, `meta_document_statuses`, `meta_document_comments`.
   - Always convert between DB rows and typed shapes via `src/server/application-normalizer.ts` (`buildApplicationData`, `buildApplicationMeta`, `mapApplicationDataToColumns`); do not reintroduce JSON blobs.
+- Keep controllers thin: tRPC routers should delegate business rules to service modules and persistence to repositories; keep mapping/coercion helpers in shared utilities (e.g., `application-normalizer.ts`).
 - Application relations are normalized (all PKs use cuid2 defaults):
   - `application_program_choice`: program selection, rank, campus/start term/study mode/funding.
   - `application_education`: education entries by type (GCE_OL, GCE_AL, BAC, PROBATOIRE, BTS, BACHELOR, OTHER), with session year, candidate number, status, dates, GPA, etc.
@@ -34,7 +35,7 @@ Any future automated changes (by tools or agents) must respect these rules.
 - Configured in `src/server/auth/better-auth.ts` with the Drizzle adapter.
   - Uses **magic-link** as the only login mechanism (email-based, one-time link).
   - Uses **multi-session** plugin to allow multiple active sessions per user.
-  - Session lifetime is ~30 minutes (`expiresIn` and `updateAge` set to 30 minutes).
+  - Session lifetime is ~30 minutes (`expiresIn` and `updateAge` set to 30 minutes, not longer).
   - tRPC `protectedProcedure` relies on Better Auth sessions via `createTRPCContext`.
 - Admin UI is built with **React Admin**:
   - Mounted under `(admin)/applications`.
@@ -91,9 +92,11 @@ These conventions must be followed for all new or modified code:
 - React Admin must:
   - Use the tRPC-based `dataProvider` for all backend access (no raw REST calls).
   - Use the Better Auth–backed `authProvider` for authorization.
+  - Implement the full RA dataProvider surface (list/show/create/update/delete/bulk) with proper filter/sort/pagination mapping to tRPC; avoid hardcoded grouping in the provider.
 - New resources (e.g., future admin entities) should:
   - Add React Admin resource components in `src/admin/resources/*` (kebab-case filenames).
-  - Add corresponding tRPC procedures in `src/server/api/routers/*` and wire them to the shared `dataProvider`.
+  - Keep React components/exports camelCase even in RA views.
+  - Add corresponding tRPC procedures in `src/server/api/routers/*` and wire them to the shared `dataProvider` via the domain/service layer.
 
 ## Form Handling Principles
 
@@ -101,6 +104,7 @@ These conventions must be followed for all new or modified code:
 - For new forms:
   - Prefer non-Formik solutions (e.g., simple controlled components + Zod, or react-hook-form if introduced explicitly).
   - Keep validation logic in Zod schemas where possible.
+- Do not add new Formik usages; migrate existing Formik forms to the chosen approach before removing the dependency.
 
 ## Applicant Form & Documents
 
@@ -121,6 +125,7 @@ These conventions must be followed for all new or modified code:
   - Better Auth for auth.
   - tRPC for backend calls.
   - Drizzle for data access.
+- Keep MVC-style separation: views stay in UI components, controllers stay in tRPC routers, business rules live in services, and persistence/mapping stay in repositories/normalizers.
 
 ## Database & Migrations
 
