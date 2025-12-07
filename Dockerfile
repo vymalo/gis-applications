@@ -25,7 +25,7 @@ RUN \
   --mount=type=bind,source=.yarnrc.yml,target=/app/.yarnrc.yml \
   --mount=type=bind,source=yarn.lock,target=/app/yarn.lock \
   --mount=type=bind,source=package.json,target=/app/package.json \
-  --mount=type=bind,source=./prisma,target=/app/prisma \
+  --mount=type=bind,source=./drizzle.config.ts,target=/app/drizzle.config.ts \
   --mount=type=cache,target=/app/node_modules \
   --mount=type=cache,target=/app/gen \
   yarn install --immutable \
@@ -55,7 +55,7 @@ COPY --from=deps /app/dep-gen ./gen
 
 RUN \
   --mount=type=bind,source=./docs,target=/app/docs \
-  --mount=type=bind,source=./prisma,target=/app/prisma \
+  --mount=type=bind,source=./drizzle.config.ts,target=/app/drizzle.config.ts \
   --mount=type=bind,source=./public/favicon.ico,target=/app/public/favicon.ico \
   --mount=type=bind,source=./src,target=/app/src \
   --mount=type=bind,source=./.yarnrc.yml,target=/app/.yarnrc.yml \
@@ -72,7 +72,7 @@ RUN \
 
 FROM base AS runner
 
-ENV NODE_ENV=production
+ENV NODE_ENV=fuction
 ENV PORT=3000
 ENV NEXT_SHARP_PATH="/app/node_modules/sharp"
 ENV HOSTNAME="0.0.0.0"

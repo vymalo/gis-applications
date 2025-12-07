@@ -5,12 +5,7 @@ LABEL org.opencontainers.image.description="Drizzle migrations runner for GIS Ap
 
 WORKDIR /app
 
-RUN corepack enable
-
-COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn/ ./.yarn/
-
-RUN yarn install --frozen-lockfile --production=false --ignore-scripts
+RUN yarn add drizzle-kit
 
 COPY drizzle.config.ts tsconfig.json ./
 COPY drizzle ./drizzle
@@ -19,4 +14,4 @@ COPY companions/migrations/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
 
-ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]

@@ -1,7 +1,8 @@
 *
 !companions
 !docs
-!prisma/schema.prisma
+!drizzle
+!drizzle.config.ts
 !public/favicon.ico
 !src
 !.yarnrc.yml
