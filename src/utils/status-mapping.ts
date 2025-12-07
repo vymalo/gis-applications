@@ -1,4 +1,4 @@
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus } from '@app/types/application-status';
 
 export const StatusMapping: Record<ApplicationStatus, string> = {
   [ApplicationStatus.INIT]: 'Init',

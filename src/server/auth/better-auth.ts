@@ -1,13 +1,14 @@
 import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
-import { magicLink, multiSession } from 'better-auth/plugins';
+import { admin, magicLink, multiSession } from 'better-auth/plugins';
 import { getMagicLinkOptions } from '@app/server/mails/send';
 import { transporter } from '@app/server/nodemailer';
 import { db } from '@app/server/db';
+import { dbSchema } from '@app/server/db/schema';
 
 /**
- * Better Auth configuration using the Prisma adapter.
+ * Better Auth configuration using the Drizzle adapter.
  *
  * This file is intentionally kept separate from the existing NextAuth-based
  * `src/server/auth/index.ts` so we can introduce Better Auth alongside
@@ -17,13 +18,14 @@ import { db } from '@app/server/db';
  */
 export const auth = betterAuth({
   appName: 'GIS Applications',
-  database: prismaAdapter(db, {
-    provider: 'postgresql',
+  database: drizzleAdapter(db, {
+    provider: 'pg',
+    schema: dbSchema,
   }),
   session: {
     // 30 minutes in seconds
-    expiresIn: 60 * 30,
-    updateAge: 60 * 30,
+    expiresIn: 60 * 30, // 30min
+    updateAge: 60 * 60 * 2, // 2h
   },
   plugins: [
     // Primary login for regular users: one-time magic link sent by email.
@@ -33,10 +35,9 @@ export const auth = betterAuth({
         await transporter.sendMail(options);
       },
     }),
-    // Allow multiple active sessions (e.g. different browsers/devices).
     multiSession(),
-    // Integrates Better Auth with Next.js App Router cookies/session handling.
     nextCookies(),
+    admin(),
   ],
   // Note: BETTER_AUTH_SECRET and BETTER_AUTH_URL are read from process.env
   // by Better Auth itself. They are also validated in `src/env.js`.

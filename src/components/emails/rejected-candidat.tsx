@@ -1,8 +1,8 @@
 import { CoreMail, TextParagraph } from '@app/components/emails/core-mail';
-import type { Application } from '@prisma/client';
+import type { ApplicationData } from '@app/types/application-data';
 
-export const RejectedCandidat = (props: Application) => (
-  <CoreMail {...props} preview='Sorry, your application was rejected'>
+export const RejectedCandidat = ({ data }: { data: ApplicationData }) => (
+  <CoreMail data={data} preview='Sorry, your application was rejected'>
     <TextParagraph>
       We&#39;re sorry to inform you that your application was rejected.
     </TextParagraph>

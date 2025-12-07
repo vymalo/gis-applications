@@ -15,9 +15,7 @@ export function ToggleInputComponent({
   label: string;
   name: string;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [{ onChange: ignored, ...field }, { touched, error }, { setValue }] =
-    useField(props);
+  const [field, { touched, error }, { setValue }] = useField(props);
 
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     await setValue(e.target.checked);

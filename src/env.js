@@ -33,9 +33,6 @@ export const env = createEnv({
     SMTP_CC: z.string().optional(),
     SMTP_REPLY_TO: z.string(),
 
-    AUTH_SESSION_MAX_AGE: z.string().transform(Number),
-    AUTH_SESSION_UPDATE_AGE: z.string().transform(Number),
-
     APP_LAST_APPLICATION_DATE: z.string().transform((r) => moment(r)),
 
     REDIS_URL: z.url().optional(),
@@ -75,10 +72,7 @@ export const env = createEnv({
     SMTP_FROM: process.env.SMTP_FROM,
     SMTP_CC: process.env.SMTP_CC,
     SMTP_REPLY_TO: process.env.SMTP_REPLY_TO,
-
-    AUTH_SESSION_MAX_AGE: process.env.AUTH_SESSION_MAX_AGE,
-    AUTH_SESSION_UPDATE_AGE: process.env.AUTH_SESSION_UPDATE_AGE,
-
+    
     APP_LAST_APPLICATION_DATE: process.env.APP_LAST_APPLICATION_DATE,
     
     REDIS_URL: process.env.REDIS_URL,

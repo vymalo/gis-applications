@@ -2,20 +2,14 @@ import { ApplicationStatusAvatar } from '@app/components/application-status-avat
 import { DATE_FORMAT } from '@app/components/inputs/utils';
 import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
 import { PhoneTelButton } from '@app/components/phone-tel-button';
-import { type Application } from '@prisma/client';
+import type { NormalizedApplication } from '@app/types/application-data';
 import moment from 'moment/moment';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { Eye } from 'react-feather';
 
-export function ApplicationListItem({
-  id,
-  data,
-  email,
-  status,
-  createdAt,
-  meta,
-}: Application) {
+export function ApplicationListItem(application: NormalizedApplication) {
+  const { id, data, email, status, createdAt, meta } = application;
   return (
     <li className='list-row' key={id}>
       <ApplicationStatusAvatar
@@ -32,8 +26,8 @@ export function ApplicationListItem({
         <div className='text-xs'>{moment(createdAt).format(DATE_FORMAT)}</div>
       </div>
       <div className='flex flex-row gap-2 items-center'>
-        {data?.phoneNumbers?.map(
-          ({ phoneNumber, whatsappCall, normalCall }: any) => (
+        {data.phoneNumbers.map(
+          ({ phoneNumber, whatsappCall, normalCall }) => (
             <Fragment key={phoneNumber}>
               {normalCall && <PhoneTelButton phoneNumber={phoneNumber} />}
 

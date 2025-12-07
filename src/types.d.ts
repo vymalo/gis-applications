@@ -1,14 +1,17 @@
-declare global {
-  namespace PrismaJson {
-    type AppJsonType = string | Record<string, AppJsonType>;
-  }
-}
-
 declare module 'app-types' {
-  import type { Application, User } from '@prisma/client';
+  import type { Application, User } from '@app/server/db/schema';
+  import type {
+    ApplicationData,
+    ApplicationMeta,
+  } from '@app/types/application-data';
 
-  declare type ApplicationUser = Omit<Application, 'createdById'> & {
+  declare type ApplicationUser = Omit<
+    Application,
+    'createdById' | 'data' | 'meta'
+  > & {
     createdBy: User | null;
+    data: ApplicationData;
+    meta: ApplicationMeta | null;
   };
 }
 

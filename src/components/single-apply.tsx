@@ -12,7 +12,10 @@ import {
   MIN_CANDIDATE_BIRTH_DATE,
 } from '@app/components/inputs/utils';
 import { api } from '@app/trpc/react';
-import { type Application } from '@prisma/client';
+import type {
+  ApplicationData,
+  NormalizedApplication,
+} from '@app/types/application-data';
 import { FieldArray, Form, Formik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -48,29 +51,31 @@ const Schema = z.object({
     .required(),
 });
 
+const createDefaultApplicationData = (): ApplicationData => ({
+  firstName: '',
+  lastName: '',
+  birthDate: MAX_CANDIDATE_BIRTH_DATE,
+  whoAreYou: '',
+  phoneNumbers: [],
+  country: 'cameroon',
+  city: '',
+  whereAreYou: '',
+  hasIDCartOrPassport: false,
+  iDCartOrPassportOrReceipt: [],
+  highSchoolOver: false,
+  highSchoolGceOLProbatoirDate: undefined,
+  highSchoolGceOLProbatoireCertificates: [],
+  highSchoolGceALBACDate: undefined,
+  highSchoolGceALBACCertificates: [],
+  universityStudent: false,
+  universityStartDate: undefined,
+  universityEndDate: undefined,
+  universityCertificates: [],
+});
+
 interface Values {
   email: string;
-  data: {
-    firstName: string;
-    lastName: string;
-    birthDate: Date;
-    whoAreYou?: string;
-    phoneNumbers: {
-      phoneNumber: string;
-      whatsappCall?: boolean;
-      normalCall?: boolean;
-    }[];
-    country: string;
-    city: string;
-    highSchoolOver: boolean;
-    whereAreYou: string;
-    universityStudent: boolean;
-    universityStartDate: Date;
-    universityEndDate: Date;
-    universityCertificates: Date;
-    hasIDCartOrPassport: boolean;
-    iDCartOrPassportOrReceipt: any[];
-  };
+  data: ApplicationData;
 }
 
 export type SingleApplyProps =
@@ -78,13 +83,15 @@ export type SingleApplyProps =
       application?: null;
     }
   | {
-      application: Application;
+      application: NormalizedApplication;
     };
 
 export function SingleApply({
   application = null,
   user = undefined,
 }: SingleApplyProps & { user?: { email?: string | null } }) {
+  const initialApplicationData =
+    application?.data ?? createDefaultApplicationData();
   const { mutateAsync } = api.application.save.useMutation();
   const router = useRouter();
 
@@ -93,25 +100,19 @@ export function SingleApply({
       validationSchema={toFormikValidationSchema(Schema)}
       initialValues={{
         email: application?.email ?? user?.email ?? '',
-        data: application?.data ?? {
-          firstName: '',
-          lastName: '',
-          birthDate: MAX_CANDIDATE_BIRTH_DATE,
-          whoAreYou: '',
-          phoneNumbers: [],
-          country: 'cameroon',
-          city: '',
-          whereAreYou: '',
-          hasIDCartOrPassport: '',
-          iDCartOrPassportOrReceipt: [],
-          highSchoolOver: '',
-        },
+        data: initialApplicationData,
       }}
       onSubmit={async (values, { resetForm, setSubmitting }) => {
         setSubmitting(true);
-        const { id } = await mutateAsync({ ...values, id: application?.id });
+        const result = await mutateAsync({ ...values, id: application?.id });
+        const applicationId = result?.id ?? application?.id;
+        if (!applicationId) {
+          resetForm();
+          setSubmitting(false);
+          return;
+        }
         resetForm();
-        router.push(`/apply/success?application_id=${id}`);
+        router.push(`/apply/success?application_id=${applicationId}`);
         setSubmitting(false);
       }}>
       {({ values }) => (

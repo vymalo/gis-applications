@@ -7,7 +7,7 @@ import { OpenWhatsappButton } from '@app/components/open-whatsapp-button';
 import { PhoneTelButton } from '@app/components/phone-tel-button';
 import { ToggleJson } from '@app/components/toggle-json';
 import { api } from '@app/trpc/react';
-import { type ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus } from '@app/types/application-status';
 import moment from 'moment/moment';
 import { Fragment, useCallback } from 'react';
 import { Check, Home, PhoneIncoming, RefreshCw, X } from 'react-feather';
@@ -53,11 +53,8 @@ export function AdminSingleApplication({
     return null;
   }
 
-  const data = application.data as Record<string, any>;
-  const status = application.status;
-  const meta = application.meta ?? {};
-  const metaStatusInvited: Record<ApplicationStatus, boolean> =
-    meta?.status?.invited ?? {};
+  const { data, status, meta } = application;
+  const metaStatusInvited = meta?.status?.invited ?? {};
 
   return (
     <ToggleJson refresh={refetch} doc={application}>

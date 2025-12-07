@@ -1,4 +1,4 @@
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus } from '@app/types/application-status';
 import { useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';
 

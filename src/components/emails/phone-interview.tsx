@@ -1,8 +1,8 @@
 import { CoreMail, TextParagraph } from '@app/components/emails/core-mail';
-import type { Application } from '@prisma/client';
+import type { ApplicationData } from '@app/types/application-data';
 
-export const PhoneInterview = (props: Application) => (
-  <CoreMail {...props} preview='You have been invited to a phone interview!'>
+export const PhoneInterview = ({ data }: { data: ApplicationData }) => (
+  <CoreMail data={data} preview='You have been invited to a phone interview!'>
     <TextParagraph>
       We&#39;re excited to invite you to a phone interview.
     </TextParagraph>

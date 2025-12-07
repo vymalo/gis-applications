@@ -10,14 +10,15 @@ Any future automated changes (by tools or agents) must respect these rules.
   - `(application)` for the applicant flow (`/apply`, `/apply/[application_id]`, etc.).
   - `(auth)` for the login gateway.
   - `(admin)` for the admin interface.
-- Data access is via **Prisma** (`src/server/db.ts`, `prisma/schema.prisma`) against PostgreSQL.
+- Data access is via **Drizzle ORM** (`src/server/db.ts`, `src/server/db/schema.ts`) against PostgreSQL with migrations driven by `drizzle.config.ts` and the `drizzle/` directory.
+- Application data and metadata shapes live in `src/types/application-data.ts`; prefer these shared `ApplicationData`, `ApplicationMeta`, and `NormalizedApplication` aliases whenever you read or write applicant records so the loose JSON payloads remain typed.
 - **tRPC** is the single backend API surface:
   - Server router at `src/server/api/*` and `src/app/api/trpc/[trpc]/route.ts`.
   - Shared tRPC clients:
     - React/Query-based client in `src/trpc/react.tsx`.
     - Generic proxy client in `src/trpc/client.ts` (used by React Admin dataProvider and authProvider).
 - Authentication is handled by **Better Auth**:
-  - Configured in `src/server/auth/better-auth.ts` with the Prisma adapter.
+- Configured in `src/server/auth/better-auth.ts` with the Drizzle adapter.
   - Uses **magic-link** as the only login mechanism (email-based, one-time link).
   - Uses **multi-session** plugin to allow multiple active sessions per user.
   - Session lifetime is ~30 minutes (`expiresIn` and `updateAge` set to 30 minutes).
@@ -56,9 +57,8 @@ These conventions must be followed for all new or modified code:
     - `export const adminAuthProvider = { ... }`
 
 - **Imports & paths**
-  - Prefer path aliases defined in `tsconfig.json`:
-    - `@app/*` for `src/*`.
-    - `@gen/*` for generated code in `gen/*`.
+- Prefer path aliases defined in `tsconfig.json`:
+  - `@app/*` for `src/*`.
   - Reuse existing helper modules instead of creating new variants:
     - Use `src/trpc/client.ts` for non-hook tRPC calls (e.g., React Admin).
     - Use `src/trpc/react.tsx` for hook-based access in React components.
@@ -96,5 +96,4 @@ These conventions must be followed for all new or modified code:
 - Before using a new library or pattern, verify it fits with:
   - Better Auth for auth.
   - tRPC for backend calls.
-  - Prisma for data access.
-
+  - Drizzle for data access.

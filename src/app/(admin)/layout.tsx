@@ -1,5 +1,5 @@
 import { auth } from '@app/server/auth/better-auth';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@app/types/user-role';
 import { type Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';

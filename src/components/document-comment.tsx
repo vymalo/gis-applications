@@ -23,7 +23,11 @@ const Schema = z.object({
   applicationId: z.string(),
 });
 
-type Values = { comment: string; publicUrl: string; applicationId: string };
+type Values = {
+  comment: string | null;
+  publicUrl: string;
+  applicationId: string;
+};
 
 export function DocumentComment({
   publicUrl,
@@ -131,10 +135,13 @@ export function DocumentComment({
 
       {!isPending && (
         <Formik<Values>
-          initialValues={{ comment: data ?? '', publicUrl, applicationId }}
+          initialValues={{ comment: data ?? null, publicUrl, applicationId }}
           validationSchema={toFormikValidationSchema(Schema)}
           onSubmit={async (values) => {
-            await saveDocumentComment(values);
+            await saveDocumentComment({
+              ...values,
+              comment: values.comment ?? '',
+            });
           }}>
           <Form className='flex flex-row items-end relative gap-2'>
             <TextareaInputComponent

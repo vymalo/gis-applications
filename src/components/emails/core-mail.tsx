@@ -1,4 +1,4 @@
-import { type Application } from '@prisma/client';
+import type { ApplicationData } from '@app/types/application-data';
 import {
   Body,
   Container,
@@ -15,6 +15,7 @@ import { type PropsWithChildren } from 'react';
 
 interface CoreMailProps {
   preview: string;
+  data: ApplicationData;
 }
 
 const baseUrl = 'http://localhost:3000';
@@ -25,7 +26,7 @@ export function CoreMail({
   children,
   preview,
   data,
-}: PropsWithChildren<CoreMailProps & Application>) {
+}: PropsWithChildren<CoreMailProps>) {
   return (
     <Html>
       <Head />

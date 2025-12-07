@@ -9,7 +9,6 @@ services.
 | Section      | Variable Name             | Description                                                        |
 |--------------|---------------------------|--------------------------------------------------------------------|
 | ConfigMap    | AUTH_KEYCLOAK_ISSUER      | Keycloak issuer URL for authentication settings.                   |
-|              | AUTH_SESSION_MAX_AGE      | Maximum session age for Keycloak authentication.                   |
 |              | S3_ENDPOINT               | Endpoint URL for the S3 bucket.                                    |
 |              | S3_PORT                   | Port number for the S3 bucket connection.                          |
 |              | S3_SCHEME                 | Protocol scheme for the S3 connection (HTTP or HTTPS).             |
@@ -41,7 +40,6 @@ configMaps:
       description: 'Common configuration for the GIS Application app.'
     data:
       AUTH_KEYCLOAK_ISSUER: https://kec.example.com/realms/main
-      AUTH_SESSION_MAX_AGE: '2592000'
       S3_ENDPOINT: s3.example.com
       S3_PORT: '443'
       S3_SCHEME: https

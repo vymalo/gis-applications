@@ -1,24 +1,69 @@
-import { ApplicationStatusSchema } from '@gen/zod';
+import {
+  and,
+  eq,
+  ilike,
+  or,
+  sql,
+} from 'drizzle-orm';
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from '@app/server/api/trpc';
+import {
+  applications,
+  users,
+  type Application,
+  type User,
+} from '@app/server/db/schema';
 import { getDocumentKey } from '@app/server/constants';
-import { UserRole } from '@prisma/client';
+import {
+  ApplicationStatus,
+  ApplicationStatusSchema,
+} from '@app/types/application-status';
+import type {
+  ApplicationData,
+  ApplicationMeta,
+  NormalizedApplication,
+} from '@app/types/application-data';
 import * as _ from 'lodash';
 import { z } from 'zod';
 
+const normalizeApplication = (row: {
+  application: Application;
+  createdBy: User | null;
+}): NormalizedApplication => {
+  const status =
+    row.application.status ?? ApplicationStatus.INIT;
+
+  return {
+    ...row.application,
+    createdBy: row.createdBy ?? null,
+    data: row.application.data as ApplicationData,
+    meta: row.application.meta as ApplicationMeta | null,
+    status: status as ApplicationStatus,
+  };
+};
+
+const buildSearchConditions = (query: string) => {
+  const fields = ['lastName', 'firstName', 'whoAreYou', 'whereAreYou'];
+  return fields.map((field) =>
+    ilike(sql`${applications.data}->>'${field}'`, `%${query}%`),
+  );
+};
+
 export const applicationRouter = createTRPCRouter({
   getUserApplication: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.application.findMany({
-      where: {
-        createdById: ctx.session.user.id,
-      },
-      include: {
-        createdBy: true,
-      },
-    });
+    const applicationRows = await ctx.db
+      .select({
+        application: applications,
+        createdBy: users,
+      })
+      .from(applications)
+      .leftJoin(users, eq(users.id, applications.createdById))
+      .where(eq(applications.createdById, ctx.session.user.id));
+
+    return applicationRows.map(normalizeApplication);
   }),
 
   getApplication: protectedProcedure
@@ -28,18 +73,30 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const sessionUser: any = ctx.session.user;
-      const userId =
-        sessionUser?.role === UserRole.ADMIN ? undefined : sessionUser?.id;
+      const sessionUser = ctx.session.user;
+      const filters = [
+        eq(applications.id, input.id),
+        ...(sessionUser.role === 'ADMIN'
+          ? []
+          : [eq(applications.createdById, sessionUser.id)]),
+      ];
 
-      const application = await ctx.db.application.findUnique({
-        where: {
-          id: input.id,
-          createdById: userId,
-        },
-      });
+      const [row] = await ctx.db
+        .select({
+          application: applications,
+          createdBy: users,
+        })
+        .from(applications)
+        .leftJoin(users, eq(users.id, applications.createdById))
+        .where(and(...filters))
+        .limit(1)
+;
 
-      return application ?? null;
+      if (!row) {
+        return null;
+      }
+
+      return normalizeApplication(row);
     }),
 
   save: publicProcedure
@@ -52,43 +109,48 @@ export const applicationRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
-      const id = input.id;
-      let previousCount = 0;
+      const filters = input.id
+        ? [
+            eq(applications.id, input.id),
+            ...(userId ? [eq(applications.createdById, userId)] : []),
+          ]
+        : [];
 
-      if (id || userId) {
-        previousCount = await ctx.db.application.count({
-          where: {
-            createdById: userId,
-            id: input.id,
-          },
-        });
-      }
+      const existing =
+        filters.length > 0
+          ? (
+              await ctx.db
+                .select()
+                .from(applications)
+                .where(and(...filters))
+                .limit(1)
+            )[0]
+          : null;
 
-      if (previousCount === 0) {
-        return ctx.db.application.create({
-          data: {
-            data: input.data,
+      if (!existing) {
+        const [inserted] = await ctx.db
+          .insert(applications)
+          .values({
+            id: input.id ?? undefined,
             email: input.email,
-            createdBy: userId
-              ? {
-                  connect: {
-                    id: userId,
-                  },
-                }
-              : undefined,
-          },
-        });
+            data: input.data,
+            createdById: userId ?? null,
+          })
+          .returning();
+
+        return inserted ?? null;
       }
 
-      return ctx.db.application.update({
-        where: {
-          id: input.id,
-        },
-        data: {
+      const [updated] = await ctx.db
+        .update(applications)
+        .set({
           data: input.data,
           email: input.email,
-        },
-      });
+        })
+        .where(eq(applications.id, input.id!))
+        .returning();
+
+      return updated ?? null;
     }),
 
   getSome: protectedProcedure
@@ -101,51 +163,22 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { q, size, page, groupBy } }) => {
-      const applications = await ctx.db.application.findMany({
-        where: q
-          ? {
-              OR: [
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['lastName'],
-                    string_contains: q,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['firstName'],
-                    string_contains: q,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whoAreYou'],
-                    string_contains: q,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  // https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/working-with-json-fields#filter-on-a-json-field-advanced
-                  data: {
-                    path: ['whereAreYou'],
-                    string_contains: q,
-                    mode: 'insensitive',
-                  },
-                },
-              ],
-            }
-          : {},
-        take: size,
-        skip: page * size,
-      });
+      const searchConditions = q ? buildSearchConditions(q) : [];
 
-      const emailDict = _.groupBy(applications, groupBy);
-      return _.entries(emailDict);
+      const rows = await ctx.db
+        .select({
+          application: applications,
+          createdBy: users,
+        })
+        .from(applications)
+        .leftJoin(users, eq(users.id, applications.createdById))
+        .where(searchConditions.length ? or(...searchConditions) : undefined)
+        .limit(size)
+        .offset(page * size);
+
+      const normalized = rows.map(normalizeApplication);
+      const grouped = _.groupBy(normalized, groupBy);
+      return _.entries(grouped);
     }),
 
   saveDocumentComment: protectedProcedure
@@ -157,28 +190,26 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { comment, applicationId, publicUrl } }) => {
-      const application = await ctx.db.application.findUnique({
-        where: {
-          id: applicationId,
-        },
-      });
+      const [application] = await ctx.db
+        .select()
+        .from(applications)
+        .where(eq(applications.id, applicationId))
+        .limit(1);
 
       if (!application) {
         return null;
       }
 
-      const meta = application.meta ?? {};
+      const meta = (application.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'comment');
       meta[key] = comment;
 
-      await ctx.db.application.update({
-        where: {
-          id: applicationId,
-        },
-        data: {
+      await ctx.db
+        .update(applications)
+        .set({
           meta,
-        },
-      });
+        })
+        .where(eq(applications.id, applicationId));
 
       return comment;
     }),
@@ -191,15 +222,23 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { applicationId, publicUrl } }) => {
-      const application = await ctx.db.application.findUnique({
-        where: {
-          id: applicationId,
-        },
-      });
+      const [application] = await ctx.db
+        .select()
+        .from(applications)
+        .where(eq(applications.id, applicationId))
+        .limit(1);
 
-      const meta = application?.meta ?? {};
+      const meta = (application?.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'comment');
-      return meta[key] ?? null;
+      const value = meta[key];
+      if (
+        value === 'approved' ||
+        value === 'rejected' ||
+        value === 'pending'
+      ) {
+        return value;
+      }
+      return null;
     }),
 
   saveDocumentCheckStatus: protectedProcedure
@@ -211,28 +250,26 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { applicationId, publicUrl, status } }) => {
-      const application = await ctx.db.application.findUnique({
-        where: {
-          id: applicationId,
-        },
-      });
+      const [application] = await ctx.db
+        .select()
+        .from(applications)
+        .where(eq(applications.id, applicationId))
+        .limit(1);
 
       if (!application) {
         return null;
       }
 
-      const meta = application.meta ?? {};
+      const meta = (application.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'status');
       meta[key] = status;
 
-      await ctx.db.application.update({
-        where: {
-          id: applicationId,
-        },
-        data: {
+      await ctx.db
+        .update(applications)
+        .set({
           meta,
-        },
-      });
+        })
+        .where(eq(applications.id, applicationId));
 
       return status;
     }),
@@ -245,15 +282,16 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input: { applicationId, publicUrl } }) => {
-      const application = await ctx.db.application.findUnique({
-        where: {
-          id: applicationId,
-        },
-      });
+      const [application] = await ctx.db
+        .select()
+        .from(applications)
+        .where(eq(applications.id, applicationId))
+        .limit(1);
 
-      const meta = application?.meta ?? {};
+      const meta = (application?.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'status');
-      return meta[key] ?? null;
+      const value = meta[key];
+      return typeof value === 'string' ? value : null;
     }),
 
   updateStatus: protectedProcedure
@@ -264,15 +302,14 @@ export const applicationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input: { applicationId, status } }) => {
-      return await ctx.db.application.update({
-        where: {
-          id: applicationId,
-        },
-        data: {
+      const [updated] = await ctx.db
+        .update(applications)
+        .set({
           status,
-        },
-      });
-    }),
+        })
+        .where(eq(applications.id, applicationId))
+        .returning();
 
-  //invite: protectedProcedure,
+      return updated ?? null;
+    }),
 });

@@ -1,17 +1,35 @@
-import { PrismaClient } from '@prisma/client';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
 import { env } from '@app/env';
 
-const createPrismaClient = () =>
-  new PrismaClient({
-    log:
-      env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  });
+const createPgPool = () => new Pool({
+  connectionString: env.DATABASE_URL,
+  ssl:
+    env.NODE_ENV === 'production'
+      ? {
+        rejectUnauthorized: false,
+      }
+      : undefined,
+});
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: ReturnType<typeof createPrismaClient> | undefined;
+type Globals = {
+  postgresClient?: ReturnType<typeof createPgPool>;
+  drizzle?: ReturnType<typeof drizzle>;
 };
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+const globalForDrizzle = globalThis as Globals;
 
-if (env.NODE_ENV !== 'production') globalForPrisma.prisma = db;
+const pgPool =
+  globalForDrizzle.postgresClient ?? createPgPool();
+
+if (env.NODE_ENV !== 'production') {
+  globalForDrizzle.postgresClient = pgPool;
+}
+
+export const db =
+  globalForDrizzle.drizzle ?? drizzle({ client: pgPool });
+
+if (env.NODE_ENV !== 'production') {
+  globalForDrizzle.drizzle = db;
+}

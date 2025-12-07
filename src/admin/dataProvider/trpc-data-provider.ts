@@ -1,10 +1,14 @@
 import { trpcClient } from '@app/trpc/client';
-import type { DataProvider } from 'ra-core';
+import type { DataProvider, RaRecord } from 'ra-core';
+import type { NormalizedApplication } from '@app/types/application-data';
 
 // TODO Remove any...
 export const trpcDataProvider: DataProvider = {
   // Basic getList implementation for the `applications` resource.
-  async getList(resource: string, params: any) {
+  async getList<RecordType extends RaRecord = any>(
+    resource: string,
+    params: any,
+  ) {
     if (resource !== 'applications') {
       throw new Error(`Unknown resource: ${resource}`);
     }
@@ -20,13 +24,15 @@ export const trpcDataProvider: DataProvider = {
     });
 
     // entries is an array of [groupKey, Application[]]
-    const data = entries.flatMap(([, applications]) => applications);
+    const data = entries.flatMap(
+      ([, applications]) => applications,
+    ) as NormalizedApplication[];
     const total = data.length;
 
-    return { data, total };
+    return { data: data as unknown as RecordType[], total };
   },
 
-  async getOne(resource: string, params: any) {
+  async getOne<RecordType extends RaRecord = any>(resource: string, params: any) {
     if (resource !== 'applications') {
       throw new Error(`Unknown resource: ${resource}`);
     }
@@ -35,7 +41,11 @@ export const trpcDataProvider: DataProvider = {
       id: params.id,
     });
 
-    return { data };
+    if (!data) {
+      throw new Error('Application not found');
+    }
+
+    return { data: data as unknown as RecordType };
   },
 
   // The remaining methods are placeholders for now and will be implemented
