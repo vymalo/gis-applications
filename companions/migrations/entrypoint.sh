@@ -2,4 +2,4 @@
 
 set -ex
 
-yarn prisma db push --accept-data-loss --skip-generate
+yarn drizzle-kit migrate

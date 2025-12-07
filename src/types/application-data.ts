@@ -12,14 +12,19 @@ export type ApplicationDocument = {
   publicUrl: string;
 };
 
+export type ApplicationDocumentStatus =
+  | 'approved'
+  | 'rejected'
+  | 'pending';
+
 export interface ApplicationMetaStatus {
   invited?: Partial<Record<ApplicationStatus, boolean>> | null;
-  [key: string]: unknown;
 }
 
 export interface ApplicationMeta {
   status?: ApplicationMetaStatus;
-  [key: string]: unknown;
+  documentStatuses?: Record<string, ApplicationDocumentStatus>;
+  documentComments?: Record<string, string>;
 }
 
 export interface ApplicationData {
@@ -46,7 +51,15 @@ export interface ApplicationData {
 }
 
 export interface NormalizedApplication
-  extends Omit<Application, 'data' | 'meta' | 'status'> {
+  extends Omit<
+    Application,
+    | 'data'
+    | 'meta'
+    | 'status'
+    | 'metaInvitedStatuses'
+    | 'metaDocumentStatuses'
+    | 'metaDocumentComments'
+  > {
   data: ApplicationData;
   meta: ApplicationMeta | null;
   status: ApplicationStatus;

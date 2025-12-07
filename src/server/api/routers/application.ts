@@ -12,10 +12,15 @@ import {
 } from '@app/server/api/trpc';
 import {
   applications,
-  users,
+  user,
   type Application,
   type User,
 } from '@app/server/db/schema';
+import {
+  buildApplicationData,
+  buildApplicationMeta,
+  mapApplicationDataToColumns,
+} from '@app/server/application-normalizer';
 import { getDocumentKey } from '@app/server/constants';
 import {
   ApplicationStatus,
@@ -23,33 +28,43 @@ import {
 } from '@app/types/application-status';
 import type {
   ApplicationData,
-  ApplicationMeta,
   NormalizedApplication,
 } from '@app/types/application-data';
 import * as _ from 'lodash';
 import { z } from 'zod';
+import { randomUUID } from 'node:crypto';
 
 const normalizeApplication = (row: {
   application: Application;
   createdBy: User | null;
 }): NormalizedApplication => {
+  const {
+    metaInvitedStatuses,
+    metaDocumentStatuses,
+    metaDocumentComments,
+    ...application
+  } = row.application;
+
   const status =
-    row.application.status ?? ApplicationStatus.INIT;
+    application.status ?? ApplicationStatus.INIT;
 
   return {
-    ...row.application,
+    ...application,
     createdBy: row.createdBy ?? null,
-    data: row.application.data as ApplicationData,
-    meta: row.application.meta as ApplicationMeta | null,
+    data: buildApplicationData(row.application),
+    meta: buildApplicationMeta(row.application),
     status: status as ApplicationStatus,
   };
 };
 
 const buildSearchConditions = (query: string) => {
-  const fields = ['lastName', 'firstName', 'whoAreYou', 'whereAreYou'];
-  return fields.map((field) =>
-    ilike(sql`${applications.data}->>'${field}'`, `%${query}%`),
-  );
+  const fields = [
+    applications.lastName,
+    applications.firstName,
+    applications.whoAreYou,
+    applications.whereAreYou,
+  ];
+  return fields.map((field) => ilike(field, `%${query}%`));
 };
 
 export const applicationRouter = createTRPCRouter({
@@ -57,10 +72,10 @@ export const applicationRouter = createTRPCRouter({
     const applicationRows = await ctx.db
       .select({
         application: applications,
-        createdBy: users,
+        createdBy: user,
       })
       .from(applications)
-      .leftJoin(users, eq(users.id, applications.createdById))
+      .leftJoin(user, eq(user.id, applications.createdById))
       .where(eq(applications.createdById, ctx.session.user.id));
 
     return applicationRows.map(normalizeApplication);
@@ -84,10 +99,10 @@ export const applicationRouter = createTRPCRouter({
       const [row] = await ctx.db
         .select({
           application: applications,
-          createdBy: users,
+          createdBy: user,
         })
         .from(applications)
-        .leftJoin(users, eq(users.id, applications.createdById))
+        .leftJoin(user, eq(user.id, applications.createdById))
         .where(and(...filters))
         .limit(1)
 ;
@@ -109,6 +124,9 @@ export const applicationRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
+      const applicationData = mapApplicationDataToColumns(
+        input.data as ApplicationData,
+      );
       const filters = input.id
         ? [
             eq(applications.id, input.id),
@@ -131,10 +149,10 @@ export const applicationRouter = createTRPCRouter({
         const [inserted] = await ctx.db
           .insert(applications)
           .values({
-            id: input.id ?? undefined,
+            id: input.id ?? randomUUID(),
             email: input.email,
-            data: input.data,
             createdById: userId ?? null,
+            ...applicationData,
           })
           .returning();
 
@@ -144,8 +162,9 @@ export const applicationRouter = createTRPCRouter({
       const [updated] = await ctx.db
         .update(applications)
         .set({
-          data: input.data,
           email: input.email,
+          ...applicationData,
+          updatedAt: sql`now()`,
         })
         .where(eq(applications.id, input.id!))
         .returning();
@@ -168,10 +187,10 @@ export const applicationRouter = createTRPCRouter({
       const rows = await ctx.db
         .select({
           application: applications,
-          createdBy: users,
+          createdBy: user,
         })
         .from(applications)
-        .leftJoin(users, eq(users.id, applications.createdById))
+        .leftJoin(user, eq(user.id, applications.createdById))
         .where(searchConditions.length ? or(...searchConditions) : undefined)
         .limit(size)
         .offset(page * size);
@@ -200,14 +219,19 @@ export const applicationRouter = createTRPCRouter({
         return null;
       }
 
-      const meta = (application.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'comment');
-      meta[key] = comment;
+      const comments =
+        (application.metaDocumentComments ?? {}) as Record<string, string>;
+      const metaDocumentComments = {
+        ...comments,
+        [key]: comment,
+      };
 
       await ctx.db
         .update(applications)
         .set({
-          meta,
+          metaDocumentComments,
+          updatedAt: sql`now()`,
         })
         .where(eq(applications.id, applicationId));
 
@@ -228,17 +252,10 @@ export const applicationRouter = createTRPCRouter({
         .where(eq(applications.id, applicationId))
         .limit(1);
 
-      const meta = (application?.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'comment');
-      const value = meta[key];
-      if (
-        value === 'approved' ||
-        value === 'rejected' ||
-        value === 'pending'
-      ) {
-        return value;
-      }
-      return null;
+      const value =
+        (application?.metaDocumentComments ?? {})[key];
+      return typeof value === 'string' ? value : null;
     }),
 
   saveDocumentCheckStatus: protectedProcedure
@@ -260,14 +277,17 @@ export const applicationRouter = createTRPCRouter({
         return null;
       }
 
-      const meta = (application.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'status');
-      meta[key] = status;
+      const metaDocumentStatuses = {
+        ...(application.metaDocumentStatuses ?? {}),
+        [key]: status,
+      };
 
       await ctx.db
         .update(applications)
         .set({
-          meta,
+          metaDocumentStatuses,
+          updatedAt: sql`now()`,
         })
         .where(eq(applications.id, applicationId));
 
@@ -288,9 +308,9 @@ export const applicationRouter = createTRPCRouter({
         .where(eq(applications.id, applicationId))
         .limit(1);
 
-      const meta = (application?.meta ?? {}) as ApplicationMeta;
       const key = getDocumentKey(publicUrl, 'status');
-      const value = meta[key];
+      const value =
+        (application?.metaDocumentStatuses ?? {})[key];
       return typeof value === 'string' ? value : null;
     }),
 
@@ -306,6 +326,7 @@ export const applicationRouter = createTRPCRouter({
         .update(applications)
         .set({
           status,
+          updatedAt: sql`now()`,
         })
         .where(eq(applications.id, applicationId))
         .returning();

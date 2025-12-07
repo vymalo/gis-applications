@@ -13,10 +13,11 @@ const toMailAddress = (value: string | null | undefined) => value ?? undefined;
 
 export async function getSendPhoneInterviewOptions({
   application,
+  data,
 }: {
   application: Application;
+  data: ApplicationData;
 }): Promise<SendMailOptions> {
-  const data = application.data as ApplicationData;
   const el = <PhoneInterview data={data} />;
 
   const [html, text] = await Promise.all([
@@ -42,10 +43,11 @@ export async function getSendPhoneInterviewOptions({
 
 export async function getSendOnsiteInterviewOptions({
   application,
+  data,
 }: {
   application: Application;
+  data: ApplicationData;
 }): Promise<SendMailOptions> {
-  const data = application.data as ApplicationData;
   const el = <OnsiteInterview data={data} />;
 
   const [html, text] = await Promise.all([
@@ -71,10 +73,11 @@ export async function getSendOnsiteInterviewOptions({
 
 export async function getAcceptedOptions({
   application,
+  data,
 }: {
   application: Application;
+  data: ApplicationData;
 }): Promise<SendMailOptions> {
-  const data = application.data as ApplicationData;
   const el = <AcceptedCandidat data={data} />;
 
   const [html, text] = await Promise.all([
@@ -100,10 +103,11 @@ export async function getAcceptedOptions({
 
 export async function getRejectedOptions({
   application,
+  data,
 }: {
   application: Application;
+  data: ApplicationData;
 }): Promise<SendMailOptions> {
-  const data = application.data as ApplicationData;
   const el = <RejectedCandidat data={data} />;
 
   const [html, text] = await Promise.all([

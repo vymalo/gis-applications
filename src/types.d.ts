@@ -7,7 +7,12 @@ declare module 'app-types' {
 
   declare type ApplicationUser = Omit<
     Application,
-    'createdById' | 'data' | 'meta'
+    | 'createdById'
+    | 'data'
+    | 'meta'
+    | 'metaInvitedStatuses'
+    | 'metaDocumentStatuses'
+    | 'metaDocumentComments'
   > & {
     createdBy: User | null;
     data: ApplicationData;

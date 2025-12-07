@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -8,8 +8,8 @@ import {
   applications,
   type Application,
 } from '@app/server/db/schema';
-import type { ApplicationMeta } from '@app/types/application-data';
-import { transporter } from '@app/server/nodemailer';
+import { buildApplicationData } from '@app/server/application-normalizer';
+import type { ApplicationData } from '@app/types/application-data';
 import {
   getAcceptedOptions,
   getRejectedOptions,
@@ -24,20 +24,17 @@ const shouldSendEmail = (
   application: Application,
   status: ApplicationStatus,
 ): boolean => {
-  const meta = (application.meta ?? {}) as ApplicationMeta;
-  return !meta.status?.invited?.[status];
+  const invited = application.metaInvitedStatuses ?? {};
+  return !invited?.[status];
 };
 
 const markAsInvited = (
   application: Application,
   status: ApplicationStatus,
-): Application['meta'] => {
-  const meta = (application.meta ?? {}) as ApplicationMeta;
-  meta.status = meta.status ?? {};
-  meta.status.invited = meta.status.invited ?? {};
-  meta.status.invited[status] = true;
-  return meta;
-};
+): Application['metaInvitedStatuses'] => ({
+  ...(application.metaInvitedStatuses ?? {}),
+  [status]: true,
+});
 
 const sendBatch = async ({
   ctx,
@@ -46,7 +43,10 @@ const sendBatch = async ({
 }: {
   ctx: TRPCContext;
   status: ApplicationStatus;
-  getOptions: (params: { application: Application }) => Promise<SendMailOptions>;
+  getOptions: (params: {
+    application: Application;
+    data: ApplicationData;
+  }) => Promise<SendMailOptions>;
 }) => {
   const applicationsToUpdate = await ctx.db
     .select()
@@ -58,13 +58,16 @@ const sendBatch = async ({
       return;
     }
 
+    const data = buildApplicationData(application);
+
     try {
-      const options = await getOptions({ application });
+      const options = await getOptions({ application, data });
       await ctx.transporter.sendMail(options);
       await ctx.db
         .update(applications)
         .set({
-          meta: markAsInvited(application, status),
+          metaInvitedStatuses: markAsInvited(application, status),
+          updatedAt: sql`now()`,
         })
         .where(eq(applications.id, application.id));
     } catch (error) {
