@@ -1,6 +1,6 @@
 {
-  "id": "3af27f13-98ac-4fb7-8673-b532196a0098",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ce75ff7e-bd37-4877-adb5-20e5a3fa9b6a",
+  "prevId": "3af27f13-98ac-4fb7-8673-b532196a0098",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -232,12 +232,6 @@
           "name": "kind",
           "type": "ApplicationDocumentKind",
           "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

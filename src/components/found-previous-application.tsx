@@ -20,7 +20,9 @@ export function FoundPreviousApplication({
 
   return (
     <div>
-      <h2>Found Previous Application</h2>
+      <h2 className='text-lg font-semibold'>
+        You already started an application
+      </h2>
       <div className='flex flex-row gap-4 items-center'>
         <div>
           <ToApplication application={application} />

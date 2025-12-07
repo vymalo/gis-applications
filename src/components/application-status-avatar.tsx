@@ -9,6 +9,7 @@ interface ApplicationStatusProps {
 }
 
 const statusColors: Record<ApplicationStatus, string> = {
+  [ApplicationStatus.DRAFT]: 'bg-neutral text-neutral-content',
   [ApplicationStatus.INIT]: 'bg-neutral text-neutral-content',
   [ApplicationStatus.PHONE_INTERVIEW_PHASE]: 'bg-warning text-warning-content',
   [ApplicationStatus.ONSITE_INTERVIEW_PHASE]: 'bg-primary text-primary-content',

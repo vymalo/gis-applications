@@ -2,7 +2,8 @@ import {
   and,
   eq,
   ilike,
-  inArray,
+  inArray, 
+  not,
   or,
   sql,
 } from 'drizzle-orm';
@@ -34,7 +35,7 @@ import {
   type ApplicationProgramChoice,
   type ApplicationProgramChoiceInsert,
   type ApplicationStatusHistory,
-  type User,
+  type User, ApplicationStatusEnum,
 } from '@app/server/db/schema';
 import {
   buildApplicationData,
@@ -76,7 +77,7 @@ type ApplicationRelations = {
 };
 
 const editableStatusesForApplicant: ApplicationStatus[] = [
-  ApplicationStatus.INIT,
+  ApplicationStatus.DRAFT,
   ApplicationStatus.NEED_APPLICANT_INTERVENTION,
 ];
 
@@ -257,7 +258,7 @@ const normalizeApplication = (
   } = row.application;
 
   const status =
-    application.status ?? ApplicationStatus.INIT;
+    application.status ?? ApplicationStatus.DRAFT;
 
   const relationSet = relations
     ? {
@@ -386,20 +387,39 @@ const derivePhones = (
 
 const deriveDocuments = (
   documents: unknown[] | undefined,
-  data: ApplicationData,
 ): ApplicationDocumentInsert[] => {
-  const provided = (documents as ApplicationStoredDocument[] | undefined) ?? [];
+  const provided = (documents as (ApplicationStoredDocument & {
+    files?: { publicUrl: string; name?: string }[];
+  })[] | undefined) ?? [];
 
-  return provided.map((doc) => ({
-    applicationId: '',
-    id: createId(),
-    educationId: doc.educationId ?? null,
-    kind: doc.kind,
-    name: doc.name,
-    publicUrl: doc.publicUrl,
-    status: doc.status ?? 'pending',
-    reviewerComment: doc.reviewerComment ?? null,
-  }));
+  const mapped: (ApplicationDocumentInsert | null)[] = provided.map((doc) => {
+    const kind = doc.kind ?? 'OTHER';
+    const firstFile = doc.files?.[0];
+    const publicUrl = doc.publicUrl || firstFile?.publicUrl || '';
+    if (!publicUrl) {
+      return null;
+    }
+    const fallbackName = firstFile?.name || kind;
+    const name =
+      (doc.name && doc.name.trim().length ? doc.name : fallbackName) ??
+      kind;
+    const educationId =
+      doc.educationId && doc.educationId.trim().length
+        ? doc.educationId
+        : null;
+    return {
+      applicationId: '',
+      id: createId(),
+      educationId,
+      kind,
+      name,
+      publicUrl,
+      status: doc.status ?? 'pending',
+      reviewerComment: doc.reviewerComment ?? null,
+    } satisfies ApplicationDocumentInsert;
+  });
+
+  return mapped.filter(Boolean) as ApplicationDocumentInsert[];
 };
 
 const deriveConsents = (
@@ -426,7 +446,12 @@ export const applicationRouter = createTRPCRouter({
       })
       .from(applications)
       .leftJoin(user, eq(user.id, applications.createdById))
-      .where(eq(applications.createdById, ctx.session.user.id));
+      .where(
+        and(
+          eq(applications.createdById, ctx.session.user.id),
+          not(eq(applications.status, ApplicationStatus.DRAFT)),
+        ),
+      );
 
     const relations = await loadApplicationRelations(
       ctx.db,
@@ -436,6 +461,37 @@ export const applicationRouter = createTRPCRouter({
     return applicationRows.map((row) =>
       normalizeApplication(row, relations),
     );
+  }),
+
+  getUserDraftApplication: protectedProcedure.query(async ({ ctx }) => {
+    const draftRows = await ctx.db
+      .select({
+        application: applications,
+        createdBy: user,
+      })
+      .from(applications)
+      .leftJoin(user, eq(user.id, applications.createdById))
+      .where(
+        and(
+          eq(applications.createdById, ctx.session.user.id),
+          inArray(applications.status, [
+            ApplicationStatus.DRAFT,
+            ApplicationStatus.NEED_APPLICANT_INTERVENTION,
+          ]),
+        ),
+      )
+      .limit(1);
+
+    const row = draftRows[0];
+    if (!row) {
+      return null;
+    }
+
+    const relations = await loadApplicationRelations(ctx.db, [
+      row.application.id,
+    ]);
+
+    return normalizeApplication(row, relations);
   }),
 
   getApplication: protectedProcedure
@@ -490,10 +546,7 @@ export const applicationRouter = createTRPCRouter({
         input.phones,
         input.data as ApplicationData,
       );
-      const documents = deriveDocuments(
-        input.documents,
-        input.data as ApplicationData,
-      );
+      const documents = deriveDocuments(input.documents);
       const consents = deriveConsents(input.consents);
 
       const filters = input.id
@@ -535,6 +588,7 @@ export const applicationRouter = createTRPCRouter({
               id: applicationId,
               email: input.email,
               createdById: userId,
+              status: ApplicationStatus.DRAFT,
               ...applicationData,
             })
             .returning();

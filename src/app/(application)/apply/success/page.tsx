@@ -15,11 +15,11 @@ export default async function ApplicationComplete({
 
       {application_id && (
         <div>
-          <p>If you wanna edt, go to your</p>
+          <p>If you want to check your status, go to your</p>
           <Link
             className='btn btn-soft btn-primary'
-            href={`/apply/${application_id}`}>
-            <span>Application</span>
+            href={`/apply/follow?application_id=${application_id}`}>
+            <span>Application status</span>
             <ArrowRight />
           </Link>
         </div>

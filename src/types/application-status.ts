@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const ApplicationStatus = {
+  DRAFT: 'DRAFT',
   INIT: 'INIT',
   PHONE_INTERVIEW_PHASE: 'PHONE_INTERVIEW_PHASE',
   ONSITE_INTERVIEW_PHASE: 'ONSITE_INTERVIEW_PHASE',

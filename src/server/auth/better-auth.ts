@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
-import { admin, magicLink } from 'better-auth/plugins';
+import { admin, haveIBeenPwned, magicLink } from 'better-auth/plugins';
 import { getMagicLinkOptions } from '@app/server/mails/send';
 import { transporter } from '@app/server/nodemailer';
 import { db } from '@app/server/db';
@@ -27,8 +27,8 @@ export const auth = betterAuth({
   }),
   session: {
     // 30 minutes in seconds
-    expiresIn: 60 * 30, // 30min
-    updateAge: 60 * 60 * 2, // 2h
+    expiresIn: 60 * 60 * 3, // 3h
+    updateAge: 60 * 60 * 7, // 7h
   },
   plugins: [
     // Primary login for regular users: one-time magic link sent by email.
@@ -38,6 +38,7 @@ export const auth = betterAuth({
         await transporter.sendMail(options);
       },
     }),
+    haveIBeenPwned(),
     nextCookies(),
     admin(),
   ],

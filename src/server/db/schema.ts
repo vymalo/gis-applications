@@ -9,6 +9,7 @@ import type {
 import type { ApplicationStatus } from '@app/types/application-status';
 
 export const ApplicationStatusEnum = pgEnum('ApplicationStatus', [
+  'DRAFT',
   'INIT',
   'PHONE_INTERVIEW_PHASE',
   'ONSITE_INTERVIEW_PHASE',
@@ -70,6 +71,7 @@ export const user = pgTable('user', {
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').default(false).notNull(),
     image: text('image'),
+    birthDate: date('birth_date', { mode: 'string' }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
@@ -227,6 +229,7 @@ export const applicationDocuments = pgTable(
       },
     ),
     kind: ApplicationDocumentKindEnum('kind').notNull(),
+    // Required column in DB; keep it in the schema to match migrations
     name: text('name').notNull(),
     publicUrl: text('public_url').notNull(),
     status: ApplicationDocumentStatusEnum('status')

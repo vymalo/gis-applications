@@ -3,7 +3,7 @@ CREATE TYPE "public"."ApplicationDocumentStatus" AS ENUM('approved', 'rejected',
 CREATE TYPE "public"."ApplicationEducationStatus" AS ENUM('IN_PROGRESS', 'COMPLETED');--> statement-breakpoint
 CREATE TYPE "public"."ApplicationEducationType" AS ENUM('GCE_OL', 'GCE_AL', 'BAC', 'PROBATOIRE', 'BTS', 'BACHELOR', 'OTHER');--> statement-breakpoint
 CREATE TYPE "public"."ApplicationPhoneKind" AS ENUM('PRIMARY', 'SECONDARY', 'GUARDIAN', 'OTHER');--> statement-breakpoint
-CREATE TYPE "public"."ApplicationStatus" AS ENUM('INIT', 'PHONE_INTERVIEW_PHASE', 'ONSITE_INTERVIEW_PHASE', 'ACCEPTED', 'REJECTED', 'NEED_APPLICANT_INTERVENTION');--> statement-breakpoint
+CREATE TYPE "public"."ApplicationStatus" AS ENUM('DRAFT', 'INIT', 'PHONE_INTERVIEW_PHASE', 'ONSITE_INTERVIEW_PHASE', 'ACCEPTED', 'REJECTED', 'NEED_APPLICANT_INTERVENTION');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -143,6 +143,7 @@ CREATE TABLE "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
+	"birth_date" date,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"banned" boolean DEFAULT false,

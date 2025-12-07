@@ -113,6 +113,10 @@ These conventions must be followed for all new or modified code:
 
 ## Database & Migrations
 
-- Drizzle migrations live in `drizzle/`; the current migration splitting application JSON fields is `drizzle/0000_expand_application_fields.sql` with journal tracking under `drizzle/meta/_journal.json`.
-- Drizzle migration `0001_application_relations.sql` adds the normalized relations above and the new status; journal tracked in `drizzle/meta/_journal.json`.
 - Migrations runner container is defined at `companions/migrations/Dockerfile` and `companions/migrations/entrypoint.sh`; it uses `yarn drizzle-kit migrate` (no Prisma) and requires `DATABASE_URL` at runtime. Build with `docker build -f companions/migrations/Dockerfile -t gis-migrations .` and run with `docker run --rm -e DATABASE_URL=... gis-migrations`.
+
+## File Uploads & Storage
+
+- File uploads use MinIO/S3 via `useUploadFile` and presigned PUTs.
+- Stored objects are placed under `users/{userId}/...` and referenced by `publicUrl`.
+- Image previews must use `SignedImage` (`src/components/signed-image.tsx`), which fetches a presigned GET URL via `upload.getViewUrl` tRPC procedure; do not render raw `publicUrl` directly in `<Image>`.

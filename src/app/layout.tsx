@@ -4,6 +4,7 @@ import { type Metadata } from 'next';
 
 import { ThemeProvider } from '@app/components/theme';
 import { TRPCReactProvider } from '@app/trpc/react';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: 'GIS Application Management',
@@ -12,15 +13,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+                                     children,
+                                   }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='en'>
-      <body className='bg-base-100'>
-        <ThemeProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </ThemeProvider>
-      </body>
+    <html lang="en">
+    <body className="bg-base-100">
+    <NuqsAdapter>
+      <ThemeProvider>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+      </ThemeProvider>
+    </NuqsAdapter>
+    </body>
     </html>
   );
 }

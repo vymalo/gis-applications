@@ -1,0 +1,1 @@
+ALTER TABLE "application_document" DROP COLUMN "name";

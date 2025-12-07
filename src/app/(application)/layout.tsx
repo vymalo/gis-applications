@@ -20,7 +20,7 @@ export default async function RootLayout({
     headers: await headers(),
   });
   return (
-    <div className='container mx-auto max-w-xl p-4'>
+    <div className='container mx-auto w-full max-w-3xl p-4'>
       <div className='mb-2 flex flex-row items-center justify-between gap-4 md:mb-4'>
         <Link href='/' className='btn btn-outline btn-primary'>
           <ArrowLeft />
