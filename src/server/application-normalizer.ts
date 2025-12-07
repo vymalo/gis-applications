@@ -6,7 +6,7 @@ import type {
   ApplicationPhoneNumber,
 } from '@app/types/application-data';
 
-const normalizeDate = (
+export const normalizeDate = (
   value: string | Date | null | undefined,
 ): string | Date | null => {
   if (!value) {
@@ -18,12 +18,12 @@ const normalizeDate = (
   return value;
 };
 
-const normalizeArray = <T>(
+export const normalizeArray = <T>(
   value: T[] | null | undefined,
   fallback: T[] = [],
 ): T[] => value ?? fallback;
 
-const toDateString = (
+export const toDateString = (
   value: string | Date | null | undefined,
 ): string | null => {
   const normalized = normalizeDate(value);

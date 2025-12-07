@@ -6,6 +6,7 @@ export const ApplicationStatus = {
   ONSITE_INTERVIEW_PHASE: 'ONSITE_INTERVIEW_PHASE',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
+  NEED_APPLICANT_INTERVENTION: 'NEED_APPLICANT_INTERVENTION',
 } as const;
 
 export type ApplicationStatus =

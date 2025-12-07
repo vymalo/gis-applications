@@ -1,10 +1,11 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
-import { admin, magicLink, multiSession, twoFactor } from 'better-auth/plugins';
+import { admin, magicLink } from 'better-auth/plugins';
 import { getMagicLinkOptions } from '@app/server/mails/send';
 import { transporter } from '@app/server/nodemailer';
 import { db } from '@app/server/db';
+import * as schema from '@app/server/db/schema';
 
 /**
  * Better Auth configuration using the Drizzle adapter.
@@ -16,10 +17,13 @@ import { db } from '@app/server/db';
  * The CLI (`@better-auth/cli`) expects an exported `auth` instance.
  */
 export const auth = betterAuth({
-  experimental: { joins: true },
+  //experimental: { joins: true },
   appName: 'GIS Applications',
   database: drizzleAdapter(db, {
     provider: 'pg',
+    schema: {
+      ...schema,
+    }
   }),
   session: {
     // 30 minutes in seconds
@@ -34,7 +38,6 @@ export const auth = betterAuth({
         await transporter.sendMail(options);
       },
     }),
-    multiSession(),
     nextCookies(),
     admin(),
   ],

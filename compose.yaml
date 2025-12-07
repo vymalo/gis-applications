@@ -65,15 +65,8 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tracking:4318"
       S3_ENDPOINT: minio
     depends_on:
-      - redis
       - postgres
       - adminer
       - migrations
       - minio
   
-  redis:
-    image: bitnami/redis
-    environment:
-      ALLOW_EMPTY_PASSWORD: yes
-    ports:
-      - "6379:6379"

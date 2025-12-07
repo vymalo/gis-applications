@@ -14,6 +14,8 @@ const statusColors: Record<ApplicationStatus, string> = {
   [ApplicationStatus.ONSITE_INTERVIEW_PHASE]: 'bg-primary text-primary-content',
   [ApplicationStatus.ACCEPTED]: 'bg-success text-success-content',
   [ApplicationStatus.REJECTED]: 'bg-error text-error-content',
+  [ApplicationStatus.NEED_APPLICANT_INTERVENTION]:
+    'bg-info text-info-content',
 };
 
 export function ApplicationStatusAvatar({

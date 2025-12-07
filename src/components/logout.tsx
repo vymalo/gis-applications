@@ -1,5 +1,7 @@
-import { authClient } from '@app/auth/client';
+"use client";
+
 import { LogOut } from 'react-feather';
+import { authClient } from '@app/auth/client';
 
 export function Logout() {
   return (

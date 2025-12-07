@@ -5,6 +5,8 @@ import { env } from '@app/env';
 
 const createPgPool = () => new Pool({
   connectionString: env.DATABASE_URL,
+  max: 10,
+  min: 5,
   ssl:
     env.NODE_ENV === 'production'
       ? {

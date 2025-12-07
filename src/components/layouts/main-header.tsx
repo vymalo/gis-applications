@@ -5,11 +5,20 @@ import { auth } from '@app/server/auth/better-auth';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { ArrowRight } from 'react-feather';
+import { authClient } from '@app/auth/client';
 
 export async function MainHeader() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+  const shouldLogOut = async () => {
+    await authClient.signOut();
+    // Optional: force navigation to clear any cached UI
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+  };
+  
   return (
     <header>
       <div className='container mx-auto my-4 max-w-xl px-4'>
