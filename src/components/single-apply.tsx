@@ -32,6 +32,7 @@ import { parseAsStringEnum, useQueryState } from 'nuqs';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import type { SingleApplyValues } from '@app/components/single-apply-types';
+import { ApplicationStatus } from '@app/types/application-status';
 
 const steps = [
   { id: 'basics', label: 'Basics' },
@@ -258,6 +259,11 @@ export function SingleApply({
           files: undefined,
         };
       });
+    }
+
+    // Final submission should move the status out of draft.
+    if (includeAll) {
+      payload.status = ApplicationStatus.INIT;
     }
 
     return payload;

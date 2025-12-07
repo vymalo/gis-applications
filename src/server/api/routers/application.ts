@@ -317,6 +317,7 @@ const SaveInputSchema = z.object({
   data: z.object({}).passthrough(),
   id: z.string().optional(),
   email: z.string(),
+  status: ApplicationStatusSchema.optional(),
   programChoices: z.array(z.object({}).passthrough()).optional(),
   educations: z.array(z.object({}).passthrough()).optional(),
   documents: z.array(z.object({}).passthrough()).optional(),
@@ -548,6 +549,10 @@ export const applicationRouter = createTRPCRouter({
       );
       const documents = deriveDocuments(input.documents);
       const consents = deriveConsents(input.consents);
+      const requestedStatus =
+        input.status && ApplicationStatusSchema.safeParse(input.status).success
+          ? (input.status as ApplicationStatus)
+          : undefined;
 
       const filters = input.id
         ? [
@@ -579,26 +584,33 @@ export const applicationRouter = createTRPCRouter({
       }
 
       let applicationId = input.id ?? createId();
+      let previousStatus: ApplicationStatus | null = null;
+      let nextStatus: ApplicationStatus | null = null;
 
       await ctx.db.transaction(async (tx) => {
         if (!existing) {
+          nextStatus = requestedStatus ?? ApplicationStatus.DRAFT;
           const [inserted] = await tx
             .insert(applications)
             .values({
               id: applicationId,
               email: input.email,
               createdById: userId,
-              status: ApplicationStatus.DRAFT,
+              status: nextStatus,
               ...applicationData,
             })
             .returning();
 
           applicationId = inserted?.id ?? applicationId;
         } else {
+          previousStatus = existing.status as ApplicationStatus;
+          nextStatus = requestedStatus ?? previousStatus ?? ApplicationStatus.DRAFT;
+
           const [updated] = await tx
             .update(applications)
             .set({
               email: input.email,
+              status: nextStatus,
               ...applicationData,
               updatedAt: sql`now()`,
             })
@@ -676,6 +688,20 @@ export const applicationRouter = createTRPCRouter({
                 applicationId,
               })),
             );
+        }
+
+        // Log status change when it actually changes
+        if (
+          previousStatus &&
+          nextStatus &&
+          previousStatus !== nextStatus
+        ) {
+          await tx.insert(applicationStatusHistory).values({
+            id: createId(),
+            applicationId,
+            status: nextStatus,
+            changedById: userId ?? undefined,
+          });
         }
       });
 

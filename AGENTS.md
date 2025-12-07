@@ -102,6 +102,17 @@ These conventions must be followed for all new or modified code:
   - Prefer non-Formik solutions (e.g., simple controlled components + Zod, or react-hook-form if introduced explicitly).
   - Keep validation logic in Zod schemas where possible.
 
+## Applicant Form & Documents
+
+- The apply wizard keeps the current step in the `step` query param using **nuqs**. Do not remove this; use `useQueryState` with the existing enum of step ids.
+- The program step has no inputs or validation; it should never block navigation.
+- For date fields stored as Drizzle `date` columns, ensure values are real `Date` objects (not strings) before validation/submission.
+- Documents:
+  - The `application_document` table requires a non-null `name` column; keep it in the schema/migrations.
+  - The UI no longer asks for a document name. When saving, derive `name` from the uploaded file name or the document `kind` and send `publicUrl` from the upload.
+  - If linking a document to an education, send `null` for `educationId` when empty—never an empty string.
+- Final submission must move applications out of `DRAFT` to `INIT` (and record status history); do not leave submitted applications in draft.
+
 ## When Editing This Repo
 
 - Respect the existing architecture and routes; avoid introducing parallel stacks (e.g., no additional REST backends).

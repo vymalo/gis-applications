@@ -1,7 +1,12 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
-import { admin, haveIBeenPwned, magicLink } from 'better-auth/plugins';
+import {
+  admin,
+  haveIBeenPwned,
+  magicLink,
+  multiSession,
+} from 'better-auth/plugins';
 import { getMagicLinkOptions } from '@app/server/mails/send';
 import { transporter } from '@app/server/nodemailer';
 import { db } from '@app/server/db';
@@ -40,6 +45,9 @@ export const auth = betterAuth({
     }),
     haveIBeenPwned(),
     nextCookies(),
+    multiSession({
+      maximumSessions: 5,
+    }),
     admin(),
   ],
   // Note: BETTER_AUTH_SECRET and BETTER_AUTH_URL are read from process.env
