@@ -30,7 +30,7 @@
     "@trpc/server": "^11.7.2",
     "axios": "^1.13.2",
     "better-auth": "^1.4.5",
-    "drizzle-orm": "^0.45.0",
+    "drizzle-orm": "^0.45.1",
     "formik": "^2.4.9",
     "gray-matter": "^4.0.3",
     "libphonenumber-js": "^1.12.31",
