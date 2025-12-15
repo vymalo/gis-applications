@@ -5286,7 +5286,7 @@ __metadata:
     react-admin: "npm:^5.13.3"
     react-day-picker: "npm:^9.12.0"
     react-dom: "npm:^19.2.1"
-    react-email: "npm:^5.0.5"
+    react-email: "npm:^5.0.8"
     react-feather: "npm:^2.0.10"
     rehype-external-links: "npm:^3.0.0"
     rehype-stringify: "npm:^10.0.1"
@@ -7649,9 +7649,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-email@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "react-email@npm:5.0.5"
+"react-email@npm:^5.0.8":
+  version: 5.0.8
+  resolution: "react-email@npm:5.0.8"
   dependencies:
     "@babel/parser": "npm:^7.27.0"
     "@babel/traverse": "npm:^7.27.0"
@@ -7672,7 +7672,7 @@ __metadata:
     tsconfig-paths: "npm:4.2.0"
   bin:
     email: dist/index.js
-  checksum: 10c0/242c4fd9f6b2dbb41aaad91e77f32cfca230a90799735645acf6e20621ab7241173e11663d2bb7d5115115fa5b9c0877ce475636af54eba6e8dae92e641f60d1
+  checksum: 10c0/cfb1fdbb396162e741321790c66f8034bdcf64e1b854e7c8489853476ee9563c190df8b5d91feb17fd0f2a072e3ae8f7ce5ec51eb9425298dc99742b36379ad8
   languageName: node
   linkType: hard
 
